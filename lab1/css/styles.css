@@ -1,66 +1,80 @@
-.wrapper {
-    
+.wrapper {  
     background: white;
     margin: auto;
-    min-width: 100%;
-    min-height: 100%;
-    float:center;
+    text-align: center;
+    
 }
 
-
 #contentWrapper {
-
     background: white;
-    border-left: 1px solid black;
-    border-right:  1px solid black;
-    /*margin-left:25%;
-    margin-right:25%;
-    margin-top:100px;*/
+    border: 1px solid black;
+    margin-top: 0px;
     margin:auto;
-    width: 50%;
-    
+    width: 70%;
+    min-height: 500px;
+    background:white; 
 }
 
 #errorText {
-    display: none;
+    display:none;
 }
 
-#textBox {
-    
-    margin-top: 5px;
-    text-align:center;
 
-}
-
-#message {
-    
+#textBox {  
+    display:inline-block;
+    width:  70%;
+    vertical-align: auto;
 
 }
 
+#submitMessage {
+    width: 10%;
+    height: 40px;
+    margin: auto;
+    margin-top: 45px;
+    display: inline;
+}
+
+#newMessage {
+    margin-top: 40px;
+    display: inline;
+    float: left;
+}
 
 #messagesDiv {
-    width: 50%;
-
+    
     margin-top: 10px;
-    margin: auto;
-   
+    margin:auto;
+    background: white;
+    
 }
 
 .unread {
 
-    
-    margin: 20px;
- 
+   
+    height: 50px;
+    margin: auto;
+    margin-top: 10px;
     width: 50%;
+    text-align: left;
     background: lightblue;
 }
 
 .read {
     
-
-    margin: 20px;
+    margin: auto;
+    margin-top: 10px;
+    text-align: left;
+    height: 50px;
     width: 50%;
     background: white;
 }
+
+.box {
+
+    float:right;
+}
+
+
 
 

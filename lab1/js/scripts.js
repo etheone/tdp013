@@ -1,6 +1,4 @@
 messagesDiv = document.getElementbyId("messagesDiv");
-SCREEN_HEIGHT = screen.height;
-messagesCount = 0;
 
 function postMessage() {
     
@@ -11,37 +9,27 @@ function postMessage() {
     } else {
 	textError();
     }
-    eraseText();
-	
-}
 
+    eraseText();	
+}
 
 function addNewMessage(text) {
     document.getElementById("errorText").style.display = "none";
     var newDiv = document.createElement('div');
-    var divHtml = text + "<input id='read' value='Mark as read' type='checkbox' onclick='markAsRead(this)'>";
+    var divHtml = text + "<input class='box' type='checkbox' onclick='markAsRead(this)'>";
 
- 
-    //var messageid = "message" + messageCount;
-
-    //messagesCount = messagesCount + 1;
-
-  //  newDiv.idName = messageid;
     newDiv.className = "unread";
     
     newDiv.innerHTML = divHtml;
-    messagesDiv.appendChild(newDiv);
-    
+    messagesDiv.appendChild(newDiv);   
 }
 
-function markAsRead(name) {
-    
+function markAsRead(name) {   
     if (name.parentElement.className == "read") {
         name.parentElement.className = "unread";
     } else {
 	name.parentElement.className = "read";
-    }
-    
+    } 
 }
 
 function valid(text) {
@@ -53,7 +41,7 @@ function valid(text) {
 
 function textError() {
     
-    document.getElementById("errorText").style.display = "block";
+    document.getElementById("errorText").style.display = "inline-block";
     
 }
 
