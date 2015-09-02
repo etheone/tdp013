@@ -1,0 +1,51 @@
+.wrapper {
+    
+    background: white;
+    margin: auto;
+    min-width: 100%;
+    min-height: 100%;
+    float:center;
+}
+
+
+#contentWrapper {
+
+    background: white;
+    border-left: 1px solid black;
+    border-right:  1px solid black;
+    /*margin-left:25%;
+    margin-right:25%;
+    margin-top:100px;*/
+    margin:auto;
+    width: 50%;
+    
+}
+
+#textBox {
+    
+    margin-top: 5px;
+    text-align:center;
+
+}
+
+#message {
+    
+
+}
+
+
+#messagesDiv {
+    width: 50%;
+
+    margin-top: 10px;
+    margin: auto;
+    border:1px solid black;
+}
+
+.message {
+
+    border:1px solid blue;
+    margin: 20px;
+    height: 100px;
+    width: 50%;
+}
