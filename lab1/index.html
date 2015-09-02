@@ -18,19 +18,19 @@
   <div id="contentWrapper">
 
     <div id="formDiv">
-      <form id="textBox" onsubmit="postMessage();">
-	<textarea id="newMessage" rows="2" cols="50" placeholder="Enter your message">
-	  </textarea>
-	<button id="submitMessage">Post</button>
+      <form id="textBox" action="post" onsubmit="postMessage(); return false;">
+	<textarea id="newMessage" rows="2" cols="50" placeholder="Enter your message"></textarea>
+	<button id="submitMessage" value="Clear">Post</button>
+	<div id="errorText">
+	  Your text needs to be > 0 and <= 140 characters
+	  </div>
 
       </form>
 
       </div>
     
     <div id="messagesDiv">
-      <div class="message">
-	Heres a message from me.
-	</div>
+
     </div>
 
 

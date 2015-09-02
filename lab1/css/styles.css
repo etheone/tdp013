@@ -21,6 +21,10 @@
     
 }
 
+#errorText {
+    display: none;
+}
+
 #textBox {
     
     margin-top: 5px;
@@ -39,13 +43,24 @@
 
     margin-top: 10px;
     margin: auto;
-    border:1px solid black;
+   
 }
 
-.message {
+.unread {
 
-    border:1px solid blue;
+    
     margin: 20px;
-    height: 100px;
+ 
     width: 50%;
+    background: lightblue;
 }
+
+.read {
+    
+
+    margin: 20px;
+    width: 50%;
+    background: white;
+}
+
+
