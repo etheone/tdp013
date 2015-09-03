@@ -2,7 +2,6 @@ messagesDiv = document.getElementbyId("messagesDiv");
 
 function postMessage() {
     
-    //return document.getElementById("newMessage").value;
     var text = document.getElementById("newMessage").value;
     if (valid(text)) {
 	addNewMessage(text);
@@ -21,7 +20,7 @@ function addNewMessage(text) {
     newDiv.className = "unread";
     
     newDiv.innerHTML = divHtml;
-    messagesDiv.appendChild(newDiv);   
+    messagesDiv.insertBefore(newDiv, messagesDiv.firstChild);
 }
 
 function markAsRead(name) {   
