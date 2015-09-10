@@ -1,28 +1,59 @@
 var request = require('superagent');
 var assert = require("assert");
-var func = require("../functions");
+var func = require("../lib/functions");
+
+var server = require('../lib/app');
+
+server.start();
+
 
 var URL = 'http://localhost:3000';
 
-describe('Array', function() {
-  describe('#indexOf()', function () {
-    it('should return -1 when the value is not present', function () {
-      assert.equal(-1, [1,2,3].indexOf(5));
-      assert.equal(-1, [1,2,3].indexOf(0));
-    });
-
-  });
-});
-
 describe('Functions', function() {
 
+    describe('Testing post', function () {
+	
+	it('should have a 405 status code', function (done) {
+	    this.timeout(9000);
+
+	    request
+		.post(URL + '/hej')
+		.end(function (err, response) {
+
+		    assert.equal(response.status, 405);
+		    done();
+		    
+		});
+
+	});
+
+    });
+
+    describe('Testing root', function () {
+	
+	it('should have a 200 status code', function (done) {
+	    this.timeout(9000);
+
+	    request
+		.get(URL)
+		.end(function (err, response) {
+
+		    assert.equal(response.status, 200);
+		    done();
+		    
+		});
+
+	});
+
+    });
+    
     describe('Testing saveMessage', function () {
 	
 	it('should have a status code 200', function (done) {
 	    this.timeout(9000);
 
 	    request
-		.get(URL + '/save/?message=hejvadbradetgar')
+		.get(URL + '/save?message=hejvadbradetgar')
 		.end(function (err, response) {
 
 		    assert.equal(response.status, 200);
@@ -37,7 +68,7 @@ describe('Functions', function() {
 	    this.timeout(9000);
 
 	    request
-		.get(URL + '/save/?message=hejvadbradetgar2')
+		.get(URL + '/save?message=hejvadbradetgar2')
 		.end(function (err, response) {
 
 		    assert.equal(response.status, 200);
@@ -51,7 +82,7 @@ describe('Functions', function() {
 	    this.timeout(9000);
 
 	    request
-		.get(URL + '/save/?messag=')
+		.get(URL + '/save?messag=')
 		.end(function (err, response) {
 
 		    assert.equal(response.status, 400);
@@ -66,7 +97,7 @@ describe('Functions', function() {
 	    this.timeout(9000);
 
 	    request
-		.get(URL + '/save/?message=hejhejhejhejhkasjdkajdlkwajdkawjdjawkdjawlkdjalkwdjaejhejhejhejhejhejehejehejhejehehehehejehjehehehehehehehehehehehehehehehehewrjhefsdjohfeakdjwakdjkwajöhfdsöofdöjohfsdjöhofsjoöhfsdjöhfsdöofjhsoöfeöjhfeöljföelsj')
+		.get(URL + '/save?message=hejhejhejhejhkasjdkajdlkwajdkawjdjawkdjawlkdjalkwdjaejhejhejhejhejhejehejehejhejehehehehejehjehehehehehehehehehehehehehehehehewrjhefsdjohfeakdjwakdjkwajöhfdsöofdöjohfsdjöhofsjoöhfsdjöhfsdöofjhsoöfeöjhfeöljföelsj')
 		.end(function (err, response) {
 
 		    assert.equal(response.status, 400);
@@ -79,7 +110,7 @@ describe('Functions', function() {
 	    this.timeout(9000);
 
 	    request
-		.get(URL + '/save/?message=')
+		.get(URL + '/save?message=')
 		.end(function (err, response) {
 
 		    assert.equal(response.status, 400);
@@ -108,7 +139,7 @@ describe('Functions', function() {
 	    this.timeout(9000);
 
 	    request
-		.get(URL + '/getAll/?1232')
+		.get(URL + '/getAll?1232')
 		.end(function (err, response) {
 
 		    assert.equal(response.status, 400);
@@ -139,7 +170,7 @@ describe('Functions', function() {
 	    this.timeout(9000);
 	    
 	    request
-		.get(URL + '/flag/?id=' + id)
+		.get(URL + '/flag?id=' + id)
 		.end(function (err, response) {
 
 
@@ -148,6 +179,21 @@ describe('Functions', function() {
 		    
 		});
 	});
+
+	it('should have a status code 400', function (done) {
+	    this.timeout(9000);
+	    
+	    request
+		.get(URL + '/flag?id=1')
+		.end(function (err, response) {
+
+
+		    assert.equal(response.status, 400);
+		    done();
+		    
+		});
+	});
+
 
     	it('should return true and status code 200', function (done) {
 	    this.timeout(9000);
@@ -183,7 +229,7 @@ describe('Functions', function() {
 	    this.timeout(9000);
 	    
 	    request
-		.get(URL + '/flag/?id=55f15e8086d281941077ce93')
+		.get(URL + '/flag?id=55f15e8086d281941077ce93')
 		.end(function (err, response) {
 		    
 
@@ -192,6 +238,7 @@ describe('Functions', function() {
 		    
 		});
 	});
+
     });
     
 });
