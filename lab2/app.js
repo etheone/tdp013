@@ -8,59 +8,32 @@ var url = require('url');
 var db = require('monk')('localhost:27017/');
 var messages = db.get('messages');
 
+var functions = require('./functions.js');
+
 app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
 app.get('/getAll', function (req, res) {
-     messages.find({}, function (err, docs) {
-	 try {
-	     res.status(200).json(docs);
-	 } catch(err) {
-	     res.status(500);
-	 }
-     });
+    var urlParts = url.parse(req.url, true);
+    if (urlParts.search != '') {
+	res.sendStatus(400);
+    } else {
+    
+    functions.getAllMessages(req, res, messages);
+    }
 });
 
 app.get('/save', function (req, res) {
-    var urlParts = url.parse(req.url, true);
-    console.log(urlParts);
-    var messageToAdd = urlParts.query['message'];
-    if (messageToAdd != null) {
-	console.log(messageToAdd);
-	if (postMessage(messageToAdd)) {
-	    console.log("It worked!");
-	    res.sendStatus(200);
-	} else {
-	    res.sendStatus(500);
-	}
-    } else {
-	res.sendStatus(400);
-    }
+    functions.saveMessage(req, res, messages, url);
 });
 
 app.get('/flag', function (req, res) {
-    var urlParts = url.parse(req.url, true);
-    var messageToFlag = urlParts.query['id'];
-    if (messageToFlag != null) {
-	try {
-	    users.find({_id:messageToFlag}, function (err, docs){ if (err) throw err;});
-	    messages.findAndModify({ _id: messageToFlag }, { $set: {flag: true} });
-	    console.log('Done.');
-	    res.send('Flagged a message');
-	} catch (err) {
-	    console.log('parameter fail');
-	    res.sendStatus(400);
-	}
-    } else {
-	res.sendStatus(400);
-    }
+    functions.flagMessage(req, res, messages, url);
 });
 
-app.get('*', function (req, res) {
-    
+app.get('*', function (req, res) { 
     res.sendStatus(404);
- 
 });
 
 app.post('*', function (req, res) {
@@ -77,17 +50,6 @@ var server = app.listen(3000, function () {
    
   console.log('Example app listening at http://%s:%s', host, port);
 });
-
-function postMessage(messageToAdd) {
-    try {
-	messages.insert({message: messageToAdd, flag: false});
-	return true;
-    } catch(err) {
-	console.log("There was an error inserting the message: " + err);
-	return false;
-    } 
-}
-
 
 function clearDb() {
 
