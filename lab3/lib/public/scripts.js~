@@ -1,0 +1,124 @@
+$( document ).ready(function() {
+   // alert('Ready normal people?');
+
+    getAllMessages();
+
+});
+
+
+messagesDiv = document.getElementbyId("messagesDiv");
+
+
+function postMessage() {
+    
+    alert("HEHEHEHEHH");
+    var text = $('#newMessage').val();
+ 
+    if (valid(text)) {
+	
+	$.ajax({
+	    url : "http://localhost:3000",
+	    type : "POST",
+	    
+	    data : {
+		message : text,
+	    }
+	})
+	    .then(
+		function success(userInfo) {
+		    alert("fukit");
+		} );
+	
+    } else {
+	textError();
+    }
+    getAllMessages();
+    eraseText();
+	
+}
+
+function getAllMessages() {
+    $( "#messagesDiv" ).empty();
+    $.ajax({
+	
+	url : "http://localhost:3000/getAll",
+	type : "GET"
+	
+    })
+	.then(
+	    function success(allMessages) {
+	//	alert("SUCCESS");
+		
+		allMessages.forEach(function(message) {
+		    //var newdiv = message['message']
+		    // $("#messagesDiv").prepend("<div>hello world</div>")
+		    jQuery('<div/>', {
+			id:  message['_id'],
+			text: message['message'],
+			class: 'unread'
+		    }).prependTo('#messagesDiv');
+		    jQuery('<input>', {
+			class: 'box',
+			type: 'checkbox',
+			onclick:'markAsRead(this)'
+		    }).appendTo('#' + message['_id']);
+		});
+		
+	    });
+}
+
+
+
+/*function addNewMessage(text) {
+    document.getElementById("errorText").style.display = "none";
+    var newDiv = document.createElement('div');
+    var divHtml = text + "<input class='box' type='checkbox' onclick='markAsRead(this)'>";
+
+    newDiv.className = "unread";
+    
+    newDiv.innerHTML = divHtml;
+    messagesDiv.insertBefore(newDiv, messagesDiv.firstChild);
+}*/
+
+function markAsRead(id) {
+    alert("called it");
+    $.ajax({
+	url : "http://localhost:3000/flag",
+	type : "PUT",
+	
+	data : id,
+	}
+    })
+	.then(
+	    function success(userInfo) {
+		alert("fukit");
+	    });
+
+    
+/*    if (name.parentElement.className == "read") {
+        name.parentElement.className = "unread";
+    } else {
+	name.parentElement.className = "read";
+    } */
+}
+
+function valid(text) {
+    if (text.length > 140 || text.length < 1) {
+	return false;
+    }
+    return true;
+}
+
+function textError() {
+    
+    document.getElementById("errorText").style.display = "inline-block";
+    
+}
+
+function eraseText() {
+    document.getElementById("newMessage").value = "";
+}
+
+
+$(".box").click(markAsRead($(this).parent().attr('id')));
+
