@@ -5,8 +5,6 @@
   <meta charset="utf-8">
 
   <title>Untitled project</title>
-
-
   <link rel="stylesheet" href="css/foundation.css">
   <link rel="stylesheet" href="css/styles.css">
   <script src="../node_modules/angular/angular.js"></script>
@@ -16,17 +14,43 @@
 
 <body ng-controller="PhoneListCtrl">
 
-  <ul>
-    <li ng-repeat="phone in phones">
-      <span>{{phone.name}}</span>
-      <p><h6>{{phone.snippet}} </h6>
-	 <h6>{{phone.price}}</h6>
-      </p>
-     
-    </li>
-  </ul>
+  <div class="row">
+    <div class="columns large-12">
+    <p class="panel callout"> text</p>
+    </div>
+  </div>  
 
-  Nothing here {{ 'yet' + '!' }}
-  
+  <div class="row">
+     <div class=" columns large-12">
+       <p class="panel callout">Some text</p>
+     </div>
+  </div>
+
+  <div class="row">
+     <div class="columns medium-6 small-12">
+       <p class="panel callout">Some text</p>
+     </div>
+     <div class="columns medium-6 small-12">
+       <p class="panel callout">Some text</p>
+     </div>
+  </div>
+
+
+    <div class="row">
+     <div class="columns medium-4 small-12">
+       <p class="panel callout">Some text</p>
+     </div>
+     <div class="columns medium-4 small-12">
+       <p class="panel callout">Some text</p>
+     </div>
+     <div class="columns medium-4 small-12">
+       <p class="panel callout">Some text</p>
+     </div>
+  </div>
+
+  <script src="js/jquery-2.1.4.js"></script>
+  <script src="js/foundation.min.js"></script> 
+  <script>
+  $(document).foundation(); 
 </body>
 </html>

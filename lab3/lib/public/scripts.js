@@ -7,7 +7,7 @@ function postMessage() {
     var text = $('#newMessage').val();
     if (valid(text)) {	
 	$.ajax({
-	    url : "http://localhost:3000",
+	    url : "/save",
 	    type : "POST",
 	    
 	    data : {
@@ -28,7 +28,7 @@ function postMessage() {
 function getAllMessages() {
     $( "#messagesDiv" ).empty();
     $.ajax({	
-	url : "http://localhost:3000/getAll",
+	url : "/getAll",
 	type : "GET"
 	
     })
@@ -63,7 +63,7 @@ function getAllMessages() {
 function markAsRead(id) {
     var messageId = id.attr('id');
     $.ajax({
-	url : "http://localhost:3000/flag?id=" +messageId,
+	url : "/flag?id=" +messageId,
 	type : "GET",
     
 	  })

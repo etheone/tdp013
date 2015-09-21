@@ -36,20 +36,13 @@ app.get('/flag', function (req, res) {
     functions.flagMessage(req, res, messages, url);
 });
 
-/*app.get('*', function (req, res) { 
-    res.sendStatus(404);
-});*/
 
-app.post('/', function (req, res) {
+app.post('/save', function (req, res) {
     var message = req.body['message'];
     var status = functions.saveMessage(req, res, messages, message);
     res.sendStatus(status);    // echo the result back
 });
 
-/*app.post('*', function(req, res) {
-    console.log('Wildcard-post called');
-    res.SendStatus(404);
-});*/
 
 var messages = db.get('messages');
 messages.index('message flag');
@@ -65,7 +58,6 @@ function clearDb() {
     if (err) throw err;
     });
 };
-
 
 if (require.main === module) {
     clearDb();
