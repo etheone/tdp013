@@ -1,0 +1,161 @@
+
+/*
+input[data-toggle] {
+    display: none;
+  }
+
+input[data-toggle]:checked + label,
+input[data-toggle]:checked + label:active {
+  background-color: lightgray;
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0) inset, 0 0px 0px rgba(0, 0, 0, 0); }
+
+.button-group.toggle li:not(first-child) {
+  margin: 0 -0.9rem;
+  
+}
+*/
+.button:hover {
+
+    background-color: lightgray;
+    border-color: #007095;
+    color: #FFFFFF;
+    transition: background-color 300ms ease-out;
+    transition-property: background-color;
+    transition-duration: 300ms;
+    transition-timing-function: ease-out;
+    transition-delay: initial;
+}
+
+
+.button {
+    font-weight:bold;
+    color: black;
+    background-color: white;
+    border: 1px solid black;
+
+}
+
+.button:hover {
+   
+    background-color: white;
+    color:black;
+    font-weight:bold
+    text-decoration: underline;
+    
+
+}
+
+#r1 {
+    border-right: 1px solid #333333 !important!;
+}
+
+
+
+.tab-bar h1 {
+
+    color: #333333;
+   
+
+};
+
+.main-section {
+
+    margin-top: 5px;
+}
+
+#testet {
+  
+margin-bottom: 10px;
+    border-top: 2px solid black;
+}
+
+/*
+
+******Canvas menu customization below******
+  
+*/
+
+.left-off-canvas-menu {
+    background-color: #FFFFFF;
+    font-weight: bold;
+
+
+    
+}
+
+.right-off-canvas-menu {
+    background-color: #FFFFFF;
+    
+    
+}
+ul.off-canvas-list li a:hover {
+      background: #FFFFFF;
+}
+ul.off-canvas-list li a:active {
+      background: #FFFFFF;
+      
+}
+
+ul.off-canvas-list li label {
+    border-bottom: 2px solid #333333;
+    border-top:none;
+    
+    padding-top: 15px;
+    padding-bottom: 12px;
+    
+    color: #333333;
+    background: #FFFFFF;
+}
+
+ul.off-canvas-list li a {
+    color: #333333;
+  cursor: pointer;
+  display: block;
+  font-size: 0.875rem;
+  font-weight: bold;
+  line-height: 1.5;
+  margin-bottom: 0;
+  
+}
+
+.has-submenu {
+
+}
+
+#submenu-top {
+    padding-top: 16px;
+    padding-bottom: 0px;
+    border-bottom: 1px solid black;
+
+}
+
+.left-submenu {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #333333;
+    background-color: #FFFFFF;
+    
+}
+
+.back {
+    padding-top: 14px;
+    padding-bottom: 12px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    display: block;
+    font-size: 0.875rem;
+    font-weight: bold;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+#new_post {
+    text-transform: none;
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+
+
+
+
