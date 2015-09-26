@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="store">
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  </head>
+
+  <body ng-controller="StoreController as store">
+    <p>
+      I am {{ 4 + 5 }}
+    </p>
+    <p>
+      {{ 'Hello' + ' world!' }}
+    </p>
+    <div ng-repeat="product in store.products">
+      <h1> {{ product.name }} </h1>
+      <h2> ${{ product.price }} </h2>
+      <p> {{ product.description }} </p>
+      <button ng-show="product.canPurchase">Add to cart</button>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+  </body>
+
+</html>
+
+<!--
+    Directives - HTML annotations that trigger Javascript behaviors
+
+    Modules - Where our application components live
+
+    Controllers - Where we add application behavior
+
+    Expressions - How values get displayed within page
+
+-->
