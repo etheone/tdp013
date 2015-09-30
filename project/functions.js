@@ -26,15 +26,18 @@ function login(req, res, user, usersdb) {
 		console.log(docs[0]);
 		if ( docs[0]['pwd'] == user['password'] ) {
 		    console.log("User found and password correct");
+		    res.status(200).json(docs);
 		} else {
 		    console.log("User found but password incorrect");
+		    res.status(400);
 		}
 	    } else {
 		console.log("Sumthing wrong user not found");
+		res.status(400);
 	    }
 	    console.log("Success!");
-	    console.log(docs);
-	    res.status(200).json(docs);
+	    //console.log(docs);
+	    //res.sendStatus(200).json(docs);
 	} catch(err) {
 	    res.status(500);
 	}

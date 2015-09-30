@@ -36,6 +36,8 @@
              ----------------------------------------------*/
             $http.post('/api/authenticate', { username: username, password: password })
                 .success(function (response) {
+		    //alert(response[0]['firstName']);
+		    response.success = true;
                     callback(response);
                 });
 
