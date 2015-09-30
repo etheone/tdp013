@@ -1,5 +1,5 @@
 
-/*
+
 input[data-toggle] {
     display: none;
   }
@@ -13,7 +13,7 @@ input[data-toggle]:checked + label:active {
   margin: 0 -0.9rem;
   
 }
-*/
+
 .button:hover {
 
     background-color: lightgray;
@@ -23,7 +23,7 @@ input[data-toggle]:checked + label:active {
     transition-property: background-color;
     transition-duration: 300ms;
     transition-timing-function: ease-out;
-    transition-delay: initial;
+    transition-delay: initial; 
 }
 
 
@@ -37,16 +37,16 @@ input[data-toggle]:checked + label:active {
 
 .button:hover {
    
-    background-color: white;
+   /* background-color: white; */
     color:black;
-    font-weight:bold
+    font-weight:bold;
     text-decoration: underline;
     
 
 }
 
 #r1 {
-    border-right: 1px solid #333333 !important!;
+    border-right: 1px solid #333333 !important;
 }
 
 
@@ -56,7 +56,7 @@ input[data-toggle]:checked + label:active {
     color: #333333;
    
 
-};
+}
 
 .main-section {
 
@@ -155,6 +155,19 @@ ul.off-canvas-list li a {
     font-weight: bold;
 }
 
+/*.page-container {
+
+
+   height: 85vh;
+
+}*/
+
+.login-box {
+  background: #fff;
+  border: 1px solid #ddd; 
+  margin: 100px 0;
+  padding: 40px 20px 0 20px;
+}
 
 
 
