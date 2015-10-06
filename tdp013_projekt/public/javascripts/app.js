@@ -116,8 +116,9 @@ app.controller('LoginCtrl', function($scope, $rootScope, $http, $location) {
     })
     .error(function(){
       // Error: authentication failed
-      $rootScope.message = 'Authentication failed.';
-      $location.url('/login');
+      $rootScope.message = "Authentication failed!";
+      	$location.path('/login');
+//	$route.reload();
     });
   };
 });
@@ -138,14 +139,19 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
     })
     .success(function(user){
       // No error: authentication OK
+	alert("Got registred");
       $rootScope.message = 'Authentication successful!';
 	$location.url('/home');
       //$location.url('/');
     })
     .error(function(){
+	alert("Didnt register");
       // Error: authentication failed
-      $rootScope.message = 'Authentication failed.';
-      $location.url('/register');
+      $rootScope.message = 'Registration failed.';
+	$location.path('/register');
+//	$route.reload();
+	//$window.location.reload();
+	
     });
   };
 });

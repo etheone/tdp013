@@ -11,6 +11,7 @@
         <h1 class="title">Socialize</h1>
       </section>
 
+
       <section class="right-small">
         <a class="right-off-canvas-toggle menu-icon" ><span></span></a>
       </section>
@@ -42,6 +43,7 @@
     <aside class="right-off-canvas-menu">
       <ul class="off-canvas-list">
         <li><label>Users</label></li>
+
 	<li ng-repeat="u in users"><a href="#">{{u.name}}</a></li>
       </ul>
     </aside>
@@ -64,6 +66,19 @@
 	    </section>
 	  </div>
 	</div>
+
+	
+	<div class="large-10 columns">
+	  <div class="row collapse postfix-round">
+            <div class="small-9 columns">
+              <input type="text" placeholder="Value">
+            </div>
+            <div class="small-3 columns">
+              <a href="#" class="button postfix">Go</a>
+            </div>
+	  </div>
+	</div>
+	
       </div>
       
 

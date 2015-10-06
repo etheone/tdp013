@@ -19,6 +19,10 @@ mongoose.connect(DBconfig.url);
 
 var User = require('./user');
 
+
+
+
+
 //==================================================================
 // Define the strategy to be used by PassportJS
 
@@ -55,8 +59,45 @@ passport.use('local-signup', new LocalStrategy({
     passReqToCallback: true
     
 }, function(req, username, password, done) {
+
+    // asynchronous
+    // User.findOne wont fire unless data is sent back
     process.nextTick(function() {
-//	console.log(req);
+
+	// find a user whose email is the same as the forms email
+	// we are checking to see if the user trying to login already exists
+	User.findOne({ 'local.username' :  username }, function(err, user) {
+	    // if there are any errors, return the error
+	    if (err)
+		return done(err);
+
+	    // check to see if theres already a user with that email
+	    if (user) {
+		console.log(user);
+		console.log("User exists");
+		return done(null, false);
+	    } else {
+
+		var newUser = new User();
+		newUser.local.username = username;
+		newUser.local.password = password;;
+		newUser.local.firstName = req.body.firstname;
+		newUser.local.lastName = req.body.lastname;
+		// save the user
+		functions.createUser(newUser);
+		return done(null, newUser);
+	    }
+
+	});    
+
+    });
+
+}));
+
+//
+					       /* function(req, username, password, done) {
+    process.nextTick(function() {
+	console.log(req);
 	var newUser = new User();
 	newUser.local.username = username;
 	newUser.local.password = password;
@@ -70,6 +111,16 @@ passport.use('local-signup', new LocalStrategy({
 	return done(null, newUser);
     })
 }));
+
+passport.use('local-signup', new LocalStrategy({
+    // by default, local strategy uses username and password, we will override with email
+    usernameField : 'email',
+    passwordField : 'password',
+    passReqToCallback : true // allows us to pass back the entire request to the callback
+},
+
+
+};*/
 
 // Serialized and deserialized methods when got from session
 passport.serializeUser(function(user, done) {
@@ -112,6 +163,7 @@ app.use(session({
 
 app.use(passport.initialize()); // Add passport initialization
 app.use(passport.session());    // Add passport initialization
+
 //app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -126,6 +178,33 @@ app.get('/', function(req, res){
   res.render('index', { title: 'Express' });
 });
 
+
+app.get('/users', auth, function(req, res){
+    var searchValue = req.value;
+    var usersArr = [];
+    User.find({}, function(err, users) {
+	if(err) {
+	    console.log(err);
+	    throw err;
+	} else {
+	    //console.log(users[2].local.firstName);
+	    for(var x in users) {
+		
+		var temp = {};
+		    temp['name'] = (users[x].local.firstName + " " + users[x].local.lastName);
+		//console.log(temp);
+		//	console.log(users[x].local.firstName);
+		usersArr.push(temp);
+	    }
+	}
+	
+	res.send(usersArr);
+    });
+    
+    // res.send([{name: "user1"}, {name: "user2"}]);
+});
+
+/*
 app.get('/users', auth, function(req, res){
     var usersArr = [];
     User.find({}, function(err, users) {
@@ -148,7 +227,7 @@ app.get('/users', auth, function(req, res){
     });
     
  // res.send([{name: "user1"}, {name: "user2"}]);
-});
+});*/
 //==================================================================
 
 //==================================================================

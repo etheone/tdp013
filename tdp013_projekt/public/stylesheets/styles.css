@@ -13,6 +13,7 @@ input[data-toggle]:checked + label:active {
   margin: 0 -0.9rem;
   
 }
+/*
 
 .button:hover {
 
@@ -23,7 +24,10 @@ input[data-toggle]:checked + label:active {
     transition-property: background-color;
     transition-duration: 300ms;
     transition-timing-function: ease-out;
-    transition-delay: initial; 
+    transition-delay: initial;
+    color:black;
+    font-weight:bold;
+    text-decoration: underline;
 }
 
 
@@ -34,13 +38,12 @@ input[data-toggle]:checked + label:active {
     border: 1px solid black;
 
 }
+*/
 
 .button:hover {
    
    /* background-color: white; */
-    color:black;
-    font-weight:bold;
-    text-decoration: underline;
+
     
 
 }
