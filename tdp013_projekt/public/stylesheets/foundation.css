@@ -58,7 +58,7 @@ body {
   font-size: 100%; }
 
 body {
-  background: #fff;
+  background: #DFDFDF;
   color: #222;
   cursor: auto;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
@@ -1173,11 +1173,11 @@ button, .button {
   button:hover, button:focus, .button:hover, .button:focus {
     color: #FFFFFF; }
   button.secondary, .button.secondary {
-    background-color: #FBFBFB;
+    background-color: #4882AC;
     border-color: #b9b9b9;
-    color: #333333; }
+    color: #whiteangu; }
     button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
-      background-color: #FBFBFB;
+      background-color: #007095;
       text-decoration: underline;}
     button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
       color: #333333; }
@@ -4670,7 +4670,7 @@ blockquote p {
 
 .tab-bar {
   -webkit-backface-visibility: hidden;
-  background: #FFFFFF;
+  background: #008CBA;
   color: #FFFFFF;
   height: 2.8125rem;
   line-height: 2.8125rem;

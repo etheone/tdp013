@@ -4,20 +4,8 @@
 
 function createUser(user) {
     //Check if users exists else create user
-   /* console.log(user['firstName']);
-    console.log(user['lastName']);
-    console.log(user['username']);
-    console.log(user['password']);*/
     console.log(user);
     try {
-	/*userdb.insert({username: user.local.username, firstName: user.local.firstname, lastName: user.local.lastName, pwd: user.local.password, friends: [ ]}, function(err, usern) {
-	    if(err) {
-		throw err;
-	    } else {
-		usern = { username: user['username'], password: user['pwd']}; 
-	    }
-
-	});*/
 	user.save(function(err) {
 	    if(err)
 		throw err;
@@ -31,17 +19,39 @@ function createUser(user) {
 }
 
 //Temporary find users functions to test stuff
-function findUsers(user) {
-    user.find({}, function(err, docs) {
+function findUsers(user, res) {
+    var usersArr = [];
+    user.find({}, function(err, users) {
 	if(err) {
 	    console.log(err);
 	    throw err;
 	} else {
-	    done(docs);
-	}
-	
+	    //console.log(users[2].local.firstName);
+	    for(var x in users) {
+		
+		var temp = {};
+		temp['name'] = (users[x].local.firstName + " " + users[x].local.lastName);
+		temp['userid'] = users[x]._id;
+		//console.log(temp);
+		//	console.log(users[x].local.firstName);
+		usersArr.push(temp);
+	    }
+	}	
+	res.send(usersArr);
     });
 }
+
+function addFriend(currentUser, userToAdd, user, res) {   
+}
+
+
+
+
+exports.createUser = createUser;
+exports.findUsers = findUsers;
+//exports.login = login;
+
+
 /*
 function login(req, res, user, usersdb) {
     //var docs = searchDb(usersdb, 'username', user['username']);
@@ -157,7 +167,3 @@ exports.saveMessage = saveMessage;
 exports.flagMessage = flagMessage;
 exports.getAllMessages = getAllMessages;
 */
-
-exports.createUser = createUser;
-exports.findUsers = findUsers;
-//exports.login = login;

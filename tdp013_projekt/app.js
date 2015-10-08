@@ -19,10 +19,6 @@ mongoose.connect(DBconfig.url);
 
 var User = require('./user');
 
-
-
-
-
 //==================================================================
 // Define the strategy to be used by PassportJS
 
@@ -94,33 +90,7 @@ passport.use('local-signup', new LocalStrategy({
 
 }));
 
-//
-					       /* function(req, username, password, done) {
-    process.nextTick(function() {
-	console.log(req);
-	var newUser = new User();
-	newUser.local.username = username;
-	newUser.local.password = password;
-	newUser.local.firstName = req.body.firstname;
-	newUser.local.lastName = req.body.lastname;
-	console.log(newUser.local.username);
-	console.log(newUser.local.password);
-	console.log(newUser.local.firstName);
-	console.log(newUser.local.lastName);
-	functions.createUser(newUser);
-	return done(null, newUser);
-    })
-}));
 
-passport.use('local-signup', new LocalStrategy({
-    // by default, local strategy uses username and password, we will override with email
-    usernameField : 'email',
-    passwordField : 'password',
-    passReqToCallback : true // allows us to pass back the entire request to the callback
-},
-
-
-};*/
 
 // Serialized and deserialized methods when got from session
 passport.serializeUser(function(user, done) {
@@ -181,28 +151,118 @@ app.get('/', function(req, res){
 
 app.get('/users', auth, function(req, res){
     var searchValue = req.value;
-    var usersArr = [];
-    User.find({}, function(err, users) {
-	if(err) {
-	    console.log(err);
-	    throw err;
-	} else {
-	    //console.log(users[2].local.firstName);
-	    for(var x in users) {
-		
-		var temp = {};
-		    temp['name'] = (users[x].local.firstName + " " + users[x].local.lastName);
-		//console.log(temp);
-		//	console.log(users[x].local.firstName);
-		usersArr.push(temp);
-	    }
-	}
-	
-	res.send(usersArr);
+    //var usersArr = [];
+    functions.findUsers(User, res);
+});
+
+app.get('/posts', auth, function(req, res){
+    var searchValue = req.value;
+    //var usersArr = [];
+  
+});
+
+app.put('/post', auth, function(req, res){
+    var searchValue = req.value;
+    //var usersArr = [];
+});
+
+app.get('/friends', auth, function(req, res){
+    var searchValue = req.value;
+    //var usersArr = [];
+    
+});
+
+app.post('/addfriend', auth, function(req, res){
+    console.log(req.user._id);
+    console.log(req.body.userIdToAdd);
+    var currUser = req.user._id;
+    var userToAdd = req.body.userIdToAdd;
+
+    User.findByIdAndUpdate(currUser, {options: {upsert:true}}, {$push: { friends: userToAdd}}, function(err, docs){
+	if(err)
+	    console.log("The err was " + err);
+	else
+	    console.log(docs);
     });
     
-    // res.send([{name: "user1"}, {name: "user2"}]);
 });
+		       
+	
+
+app.get('/userinfo', auth, function(req, res){
+    console.log(req.query.userid);
+    var userToFind = req.query.userid;
+    console.log("******************");
+    var userInfo = []
+    User.findOne({ _id : userToFind }, function(err, user){
+	if (err) {
+	    throw err;
+	} else {
+	    console.log(user);
+	    userInfo.push(user.local.firstName + " " + user.local.lastName);
+	    userInfo.push(user.local.posts);
+	}
+	res.send(userInfo);
+    });
+    
+});
+
+
+// route to test if the user is logged in or not
+app.get('/loggedin', function(req, res) {
+    console.log(req.body);
+  res.send(req.isAuthenticated() ? req.user : '0');
+});
+
+app.post('/register', passport.authenticate('local-signup'), function(req, res) {
+    res.send(req.user);
+});
+
+// route to log in
+app.post('/login', passport.authenticate('local-login'), function(req, res) {
+  res.send(req.user);
+});
+
+// route to log out
+app.post('/logout', function(req, res){
+  req.logOut();
+  res.send(200);
+});
+//==================================================================
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
+
+//
+					       /* function(req, username, password, done) {
+    process.nextTick(function() {
+	console.log(req);
+	var newUser = new User();
+	newUser.local.username = username;
+	newUser.local.password = password;
+	newUser.local.firstName = req.body.firstname;
+	newUser.local.lastName = req.body.lastname;
+	console.log(newUser.local.username);
+	console.log(newUser.local.password);
+	console.log(newUser.local.firstName);
+	console.log(newUser.local.lastName);
+	functions.createUser(newUser);
+	return done(null, newUser);
+    })
+}));
+
+passport.use('local-signup', new LocalStrategy({
+    // by default, local strategy uses username and password, we will override with email
+    usernameField : 'email',
+    passwordField : 'password',
+    passReqToCallback : true // allows us to pass back the entire request to the callback
+},
+
+
+};*/
+
 
 /*
 app.get('/users', auth, function(req, res){
@@ -231,28 +291,3 @@ app.get('/users', auth, function(req, res){
 //==================================================================
 
 //==================================================================
-// route to test if the user is logged in or not
-app.get('/loggedin', function(req, res) {
-    console.log(req.body);
-  res.send(req.isAuthenticated() ? req.user : '0');
-});
-
-app.post('/register', passport.authenticate('local-signup'), function(req, res) {
-    res.send(req.user);
-});
-
-// route to log in
-app.post('/login', passport.authenticate('local-login'), function(req, res) {
-  res.send(req.user);
-});
-
-// route to log out
-app.post('/logout', function(req, res){
-  req.logOut();
-  res.send(200);
-});
-//==================================================================
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});

@@ -5,6 +5,7 @@
  **********************************************************************/
 var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
   .config(function($routeProvider, $locationProvider, $httpProvider) {
+      
     //================================================
     // Check if the user is connected
     //================================================
@@ -15,10 +16,17 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
       // Make an AJAX call to check if the user is logged in
       $http.get('/loggedin').success(function(user){
         // Authenticated
-        if (user !== '0')
-          /*$timeout(deferred.resolve, 0);*/
-          deferred.resolve();
+/*	  for(var x in user.local)
+	  {
+	      alert(user.local[x]);
+	  }*/
 
+        if (user !== '0') {
+          /*$timeout(deferred.resolve, 0);*/
+	    $rootScope.currentUser = { username: user.local.username, firstname: user.local.firstName, lastname: user.local.lastName};
+	    $rootScope.friends = user.local.friends;
+          deferred.resolve();
+	}
         // Not Authenticated
         else {
           $rootScope.message = 'You need to log in.';
@@ -70,9 +78,18 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
               }
 
 	  })
+	  .when('/user', {
+	      templateUrl: 'views/home.html',
+	      controller: 'UserCtrl',
+	     resolve: {
+		  loggedin: checkLoggedin
+	      }
+	  })
+      
 	  .when('/login', {
               templateUrl: 'views/login.html',
-              controller: 'LoginCtrl'
+              controller: 'LoginCtrl',
+
 	  })
           .when('/register', {
               templateUrl: 'views/register.html',
@@ -81,11 +98,12 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 	  .otherwise({
               redirectTo: '/login'
 	  });
-    //================================================
+      //================================================
 
   }) // end of config()
     .run(function($rootScope, $http){
 	$rootScope.message = '';
+	$rootScope.currentUser = $rootScope.setUser;
 
 	// Logout function is available in any pages
 	$rootScope.logout = function(){
@@ -111,6 +129,7 @@ app.controller('LoginCtrl', function($scope, $rootScope, $http, $location) {
     })
     .success(function(user){
       // No error: authentication OK
+	//currentUser = $scope.user.username;
       $rootScope.message = 'Authentication successful!';
       $location.url('/home');
     })
@@ -130,44 +149,111 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
   // This object will be filled by the form
   $scope.user = {};
 
-  $scope.register = function(){
-    $http.post('/register', {
-	username: $scope.user.username,
-	password: $scope.user.password,
-	firstname: $scope.user.firstName,
-	lastname: $scope.user.lastName
-    })
-    .success(function(user){
-      // No error: authentication OK
-	alert("Got registred");
-      $rootScope.message = 'Authentication successful!';
-	$location.url('/home');
-      //$location.url('/');
-    })
-    .error(function(){
-	alert("Didnt register");
-      // Error: authentication failed
-      $rootScope.message = 'Registration failed.';
-	$location.path('/register');
-//	$route.reload();
-	//$window.location.reload();
-	
-    });
-  };
+    $scope.register = function(){
+	$http.post('/register', {
+	    username: $scope.user.username,
+	    password: $scope.user.password,
+	    firstname: $scope.user.firstName,
+	    lastname: $scope.user.lastName
+	})
+	    .success(function(user){
+		// No error: authentication OK
+		alert("Got registred");
+		//currentUser = $scope.user.username;
+		$rootScope.message = 'Authentication successful!';
+		$location.url('/home');
+		//$location.url('/');
+	    })
+	    .error(function(){
+		alert("Didnt register");
+		// Error: authentication failed
+		$rootScope.message = 'Registration failed.';
+		$location.path('/register');
+		//	$route.reload();
+		//$window.location.reload();
+		
+	    });
+    };
 });
-
-
 
 /**********************************************************************
  * Home controller
  **********************************************************************/
-app.controller('HomeCtrl', function($scope, $http) {
+app.controller('HomeCtrl', function($scope, $rootScope, $http) {
   // List of users got from the server
-  $scope.users = [];
+    $scope.friends = [];
+    $scope.posts = [];
+    $scope.users = [];
+    $scope.home = true;
 
+    
+    
+
+    //alert($rootScope.currentUser);
+  /*  $scope.addFriend = function() {
+	$http.post('/addFriend', {
+	    userToAdd = this.userId;
+	})
+    };*/
+    //alert($rootScope.currentUser);
   // Fill the array to display it in the page
   $http.get('/users').success(function(users){
     for (var i in users)
       $scope.users.push(users[i]);
   });
+
+    
 });
+
+/**********************************************************************
+ * User controller
+ **********************************************************************/
+app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams) {
+  // List of users got from the server
+    $scope.addFriend = function(){
+	$http.post('/addfriend', {
+	    userIdToAdd: $routeParams.userid
+	})
+	    .success(function(user){
+		alert('Added a friend');
+	    })
+	    .error(function(){
+		alert('Did not add a friend');
+	    });
+    };
+
+	  
+    $scope.Userinfo = [];
+    $http({
+	url: '/userinfo/',
+	method: 'GET',
+	params: {userid: $routeParams.userid}
+    }).success(function(info){
+	alert(info);
+	$scope.Userinfo = info;
+    });
+
+ /*   $scope.visitPage = $scope.Userinfo[0];
+    $scope.posts = $scope.Userinfo[1];*/
+    if($rootScope.friends.indexOf($routeParams.userid) != -1) {
+	$scope.notFriend = false;
+    } else {
+	$scope.notFriend = true;
+    }
+    $scope.users = [];
+    $scope.home = false;
+
+    
+    
+    // Fill the array to display it in the page
+    $http.get('/users').success(function(users){
+	for (var i in users)
+	    $scope.users.push(users[i]);
+    });
+
+    
+});
+
+
+
+
