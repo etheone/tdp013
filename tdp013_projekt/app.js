@@ -1,5 +1,6 @@
 var express = require('express');
 var http = require('http');
+
 var path = require('path');
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
@@ -293,9 +294,25 @@ app.post('/logout', function(req, res){
 });
 //==================================================================
 
-http.createServer(app).listen(app.get('port'), function(){
+/*http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+});*/
+
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
 });
+server.listen(app.get('port'), function(){
+    console.log('Express server listening on port ' + app.get('port'));
+});
+
+
+
+
 
 
 //

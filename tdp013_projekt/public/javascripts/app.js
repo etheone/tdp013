@@ -117,6 +117,30 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 	};
     });
 
+app.factory('socket', function ($rootScope) {
+    var socket = io.connect();
+    return {
+	on: function (eventName, callback) {
+	    socket.on(eventName, function () {  
+		var args = arguments;
+		$rootScope.$apply(function () {
+		    callback.apply(socket, args);
+		});
+	    });
+	},
+	emit: function (eventName, data, callback) {
+	    socket.emit(eventName, data, function () {
+		var args = arguments;
+		$rootScope.$apply(function () {
+		    if (callback) {
+			callback.apply(socket, args);
+		    }
+		});
+	    })
+	}
+    };
+});
+
 
 /**********************************************************************
  * Login controller
@@ -184,7 +208,7 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
 /**********************************************************************
  * Home controller
  **********************************************************************/
-app.controller('HomeCtrl', function($scope, $rootScope, $http) {
+app.controller('HomeCtrl', function($scope, $rootScope, $http, socket) {
   // List of users got from the server
     $scope.newPost = false;
     $scope.writePost = function(){

@@ -10,6 +10,18 @@
     <p ng-bind="content"></p>
   </div>
   <div class="joyride-content-wrapper">
-    <input type="text" ng-model="dynamicPopoverTitle" class="form-control">
+    <ul id="messages"></ul>
+    <div class="large-12">
+      <div class="row collapse">
+	<div class="small-9 columns">
+	  <input type="text" ng-model="dynamicPopoverTitle" class="form-control">
+	</div>
+	<div class="small-3 columns">
+	  <a href="#" class="button small prefix">Send</a>
+	</div>
+      </div>
+    </div>
+    
+    
   </div>
 </div>
