@@ -30,7 +30,7 @@ function findUsers(user, res) {
 	    for(var x in users) {
 		
 		var temp = {};
-		temp['name'] = (users[x].local.firstName + " " + users[x].local.lastName);
+		temp['name'] = (users[x].firstName + " " + users[x].lastName);
 		temp['userid'] = users[x]._id;
 		//console.log(temp);
 		//	console.log(users[x].local.firstName);

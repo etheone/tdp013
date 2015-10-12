@@ -77,8 +77,8 @@ passport.use('local-signup', new LocalStrategy({
 		var newUser = new User();
 		newUser.local.username = username;
 		newUser.local.password = password;;
-		newUser.local.firstName = req.body.firstname;
-		newUser.local.lastName = req.body.lastname;
+		newUser.firstName = req.body.firstname;
+		newUser.lastName = req.body.lastname;
 		// save the user
 		functions.createUser(newUser);
 		return done(null, newUser);
@@ -156,18 +156,73 @@ app.get('/users', auth, function(req, res){
 });
 
 app.get('/posts', auth, function(req, res){
-    var searchValue = req.value;
-    //var usersArr = [];
+    
+    var postToGet = req.query.userid;
+    if(postToGet == undefined){
+	postToGet = req.user._id;
+    }
+
+       
+    User.findOne({ _id : postToGet }, function(err, user){
+	if (err) {
+	    throw err;
+	} else {
+	    
+	    console.log("Successfully got posts from " + postToGet);
+	    
+	}
+	res.send(user.posts);
+    }); 
   
 });
 
-app.put('/post', auth, function(req, res){
-    var searchValue = req.value;
-    //var usersArr = [];
+app.post('/newpost', auth, function(req, res){
+    var author = req.user.firstName + " " + req.user.lastName;
+    //    var timePosted = Date(); TO (MAY)BE IMPLEMENTED
+    var text = req.body.text;
+    var userToRecieve = req.body.userToRecieve;
+    var post = {'author': author, 'text':text };
+    console.log("AUTHOR IS");
+    console.log(author);
+    console.log("DATE IS");
+    console.log("today =))))");
+    console.log("USER TO RECIEVE THIS SHIT IS");
+    console.log(userToRecieve);
+    console.log("TEXT IS");
+    console.log(text);
+    
+    
+    User.findByIdAndUpdate(userToRecieve, {$push: { posts: post }}, {new: true}, function(err, user){
+	if(err) {
+	    throw err;
+	}
+	else {
+	    console.log(user);
+	    
+	    
+	}
+	res.send(post);
+    });
 });
 
 app.get('/friends', auth, function(req, res){
-    var searchValue = req.value;
+   
+    var userToFind = req.user._id;
+    console.log(userToFind);
+    console.log("***********USER TO FIND IN /FRIENDS *******");
+    var userInfo = []
+    User.findOne({ _id : userToFind }, function(err, user){
+	if (err) {
+	    throw err;
+	} else {
+	   // console.log(user);
+	    console.log(".......................................");
+
+
+	}
+	res.send(user.friends);
+    });
+    
     //var usersArr = [];
     
 });
@@ -177,13 +232,20 @@ app.post('/addfriend', auth, function(req, res){
     console.log(req.body.userIdToAdd);
     var currUser = req.user._id;
     var userToAdd = req.body.userIdToAdd;
+    var nameToAdd = req.body.nameToAdd;
 
-    User.findByIdAndUpdate(currUser, {options: {upsert:true}}, {$push: { friends: userToAdd}}, function(err, docs){
-	if(err)
-	    console.log("The err was " + err);
-	else
-	    console.log(docs);
+    User.findByIdAndUpdate(currUser, {$push: { friends: {userid: userToAdd, name: nameToAdd } }}, {new: true}, function(err, user){
+	if(err) {
+	    throw err;
+	}
+	else {
+	   // console.log(user);
+	    
+	    
+	}
+	res.send(user.friends);
     });
+    
     
 });
 		       
@@ -199,8 +261,8 @@ app.get('/userinfo', auth, function(req, res){
 	    throw err;
 	} else {
 	    console.log(user);
-	    userInfo.push(user.local.firstName + " " + user.local.lastName);
-	    userInfo.push(user.local.posts);
+	    userInfo.push(user.firstName + " " + user.lastName);
+	    userInfo.push(user.posts);
 	}
 	res.send(userInfo);
     });
@@ -210,7 +272,8 @@ app.get('/userinfo', auth, function(req, res){
 
 // route to test if the user is logged in or not
 app.get('/loggedin', function(req, res) {
-    console.log(req.body);
+    console.log(req.user);
+    console.log("************************************************REQ:BODY ABOEV***********************");
   res.send(req.isAuthenticated() ? req.user : '0');
 });
 

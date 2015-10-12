@@ -23,8 +23,8 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 
         if (user !== '0') {
           /*$timeout(deferred.resolve, 0);*/
-	    $rootScope.currentUser = { username: user.local.username, firstname: user.local.firstName, lastname: user.local.lastName};
-	    $rootScope.friends = user.local.friends;
+	    $rootScope.currentUser = { username: user.local.username, firstname: user.firstName, lastname: user.lastName};
+	    $rootScope.friends = user.friends;
           deferred.resolve();
 	}
         // Not Authenticated
@@ -56,6 +56,7 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
         }
       };
     });
+
     //================================================
 
     //================================================
@@ -101,9 +102,12 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
       //================================================
 
   }) // end of config()
+
+
+
     .run(function($rootScope, $http){
 	$rootScope.message = '';
-	$rootScope.currentUser = $rootScope.setUser;
+	//$rootScope.currentUser = $rootScope.setUser;
 
 	// Logout function is available in any pages
 	$rootScope.logout = function(){
@@ -158,6 +162,7 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
 	})
 	    .success(function(user){
 		// No error: authentication OK
+		alert(user);
 		alert("Got registred");
 		//currentUser = $scope.user.username;
 		$rootScope.message = 'Authentication successful!';
@@ -181,14 +186,58 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
  **********************************************************************/
 app.controller('HomeCtrl', function($scope, $rootScope, $http) {
   // List of users got from the server
-    $scope.friends = [];
-    $scope.posts = [];
+    $scope.newPost = false;
+    $scope.writePost = function(){
+	if($scope.newPost === false) {
+	    $scope.newPost = true;
+	} else {
+	    $scope.newPost = false;
+	}
+	
+    };
+
+    $scope.searchText;
+    $scope.search = false;
+
+    $scope.getResults = function() {
+	$scope.findUsers($scope.searchText);
+
+    };
+
+    $scope.findUsers = function(sValue) {
+	var result;
+	$scope.users.forEach(function(obj, i){
+	    $scope.search = true;
+	    if(obj.name == sValue){
+		alert(obj.userid);
+		alert(obj.name);
+		$scope.searchResult = obj;
+		alert("Result is " + $scope.searchResult.name + "id is " + $scope.searchResult.userid);
+		
+	    }
+	});
+    };
+   
     $scope.users = [];
     $scope.home = true;
 
     
-    
+    $http({
+	url: '/friends',
+	method: 'GET',
+    }).success(function(friends){
+	$scope.friends = friends;
+    });
 
+    $http({
+	url: '/posts',
+	method: 'GET',
+    }).success(function(posts){
+	$scope.posts = posts;
+
+    });
+    
+    
     //alert($rootScope.currentUser);
   /*  $scope.addFriend = function() {
 	$http.post('/addFriend', {
@@ -208,40 +257,104 @@ app.controller('HomeCtrl', function($scope, $rootScope, $http) {
 /**********************************************************************
  * User controller
  **********************************************************************/
-app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams) {
+app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams, $timeout) {
   // List of users got from the server
+    $scope.newPost = false;
+    $scope.writePost = function(){
+	if($scope.newPost === false) {
+	    $scope.newPost = true;
+	} else {
+	    $scope.newPost = false;
+	}
+    };
+    
+    
     $scope.addFriend = function(){
+	
 	$http.post('/addfriend', {
-	    userIdToAdd: $routeParams.userid
+	    userIdToAdd: $routeParams.userid,
+	    nameToAdd: $scope.Userinfo[0]
 	})
-	    .success(function(user){
-		alert('Added a friend');
+	    .success(function(friends){
+		alert(friends);
+		$scope.friends = friends;
+		$scope.notFriend = false;
+		//$timeout(callAtTimeout, 3000);
+		
 	    })
 	    .error(function(){
-		alert('Did not add a friend');
+		alert('Friend could not be added at this time');
 	    });
     };
 
-	  
+    $scope.posttext;
+    
+    $scope.sendPost = function(){
+	alert($scope.posttext);
+	$http.post('/newpost', {
+	    userToRecieve: $routeParams.userid,
+	    text: $scope.posttext
+	})
+	    .success(function(posts){
+		$scope.newPost = false;
+		$scope.posts.push(posts);
+		alert(posts);
+	    })
+	    .error(function(){
+		alert('Post could not be sent at this time');
+	    });
+    };
+
+    
     $scope.Userinfo = [];
     $http({
 	url: '/userinfo/',
 	method: 'GET',
 	params: {userid: $routeParams.userid}
     }).success(function(info){
-	alert(info);
 	$scope.Userinfo = info;
+	$scope.visitPage = $scope.Userinfo[0];
+	//loadFriends();
     });
 
- /*   $scope.visitPage = $scope.Userinfo[0];
-    $scope.posts = $scope.Userinfo[1];*/
-    if($rootScope.friends.indexOf($routeParams.userid) != -1) {
-	$scope.notFriend = false;
-    } else {
+
+    $http({
+	url: '/friends',
+	method: 'GET',
+    }).success(function(friends){
 	$scope.notFriend = true;
-    }
+	$scope.friends = friends;
+	$scope.friends.forEach(function(friend, i){
+	    if(friend.userid == $routeParams.userid){
+		$scope.notFriend = false;
+	    }
+	    /*	if($scope.friends.indexOf($routeParams.userid) != -1) {
+		
+		$scope.notFriend = false;
+		} else {
+		$scope.notFriend = true;
+		}*/
+	});
+    });
+    
+    
+    $http({
+	url: '/posts',
+	method: 'GET',
+	params: {userid: $routeParams.userid}
+    }).success(function(posts){
+	$scope.posts = posts;
+	//Do something with posts
+    });
+
+    
+
+
     $scope.users = [];
     $scope.home = false;
+    //loadFriends();
+    
+  
 
     
     
@@ -254,6 +367,12 @@ app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams) {
     
 });
 
+
+app.controller('ChatCtrl', function($scope, $rootScope, $http, $routeParams, $timeout) {
+    $scope.chatPopover = "fName said";
+    $scope.chatTitle = "fName lName";
+    
+});
 
 
 
