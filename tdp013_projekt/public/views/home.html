@@ -52,9 +52,9 @@
 
     <aside class="right-off-canvas-menu">
       <ul class="off-canvas-list">
-        <li><label>Users</label></li>
+        <li><label>Friends</label></li>
 
-	<li ng-repeat="f in friends"><a ng-href="#/user?userid={{f.userid}}">{{f.name}}</a></li>
+	<li ng-repeat="f in friends"><a ng-href="#/user?userid={{f.userid}}">{{f.name}}<i ng-click="$event.preventDefault(); startChat()" style="float: right;" class="fa fa-comment"></i></a></li>
       </ul>
     </aside>
     
@@ -150,13 +150,15 @@
 
 
       <ul class="button-group radius">
-	<li><div ng-controller="ChatCtrl" class="columns">
+	<li>
+	  <div ng-controller="ChatCtrl" class="columns">
 	    <div class="form-group">
+	    
+	    <button popover="{{messages}}" popover-title="{{name}}" class="button">fName lName</button>
 	    </div>
-	    <button popover="{{chatPopover}}"
-		    popover-title="{{chatTitle}}" ng-click="getUser()" class="button">fName lName</button>
-	</div></li>
-<!--
+	  </div>
+	</li>
+	<!--
 	<li><div ng-controller="ChatCtrl" class="columns">
 	    <div class="form-group">
 	    </div>

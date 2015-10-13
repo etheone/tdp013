@@ -117,27 +117,32 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 	};
     });
 
+
+    
 app.factory('socket', function ($rootScope) {
     var socket = io.connect();
     return {
-	on: function (eventName, callback) {
-	    socket.on(eventName, function () {  
-		var args = arguments;
-		$rootScope.$apply(function () {
-		    callback.apply(socket, args);
-		});
-	    });
-	},
-	emit: function (eventName, data, callback) {
-	    socket.emit(eventName, data, function () {
-		var args = arguments;
-		$rootScope.$apply(function () {
-		    if (callback) {
-			callback.apply(socket, args);
-		    }
-		});
-	    })
-	}
+        on: function (eventName, callback) {
+	    alert(eventName);
+            socket.on(eventName, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    callback.apply(socket, args);
+                });
+            });
+        },
+        emit: function (eventName, data, callback) {
+	    alert("Next " + eventName);
+	    
+            socket.emit(eventName, data, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    if (callback) {
+                        callback.apply(socket, args);
+                    }
+                });
+            })
+        }
     };
 });
 
@@ -175,7 +180,7 @@ app.controller('LoginCtrl', function($scope, $rootScope, $http, $location) {
  **********************************************************************/
 app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
   // This object will be filled by the form
-  $scope.user = {};
+    $scope.user = {};
 
     $scope.register = function(){
 	$http.post('/register', {
@@ -208,8 +213,11 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
 /**********************************************************************
  * Home controller
  **********************************************************************/
-app.controller('HomeCtrl', function($scope, $rootScope, $http, socket) {
-  // List of users got from the server
+app.controller('HomeCtrl', function($scope, $rootScope, $http) {
+
+
+
+    // List of users got from the server
     $scope.newPost = false;
     $scope.writePost = function(){
 	if($scope.newPost === false) {
@@ -241,7 +249,11 @@ app.controller('HomeCtrl', function($scope, $rootScope, $http, socket) {
 	    }
 	});
     };
-   
+
+    $scope.startChat = function() {
+	alert("Start chat");
+    };
+    
     $scope.users = [];
     $scope.home = true;
 
@@ -263,17 +275,17 @@ app.controller('HomeCtrl', function($scope, $rootScope, $http, socket) {
     
     
     //alert($rootScope.currentUser);
-  /*  $scope.addFriend = function() {
+    /*  $scope.addFriend = function() {
 	$http.post('/addFriend', {
-	    userToAdd = this.userId;
+	userToAdd = this.userId;
 	})
-    };*/
+	};*/
     //alert($rootScope.currentUser);
-  // Fill the array to display it in the page
-  $http.get('/users').success(function(users){
-    for (var i in users)
-      $scope.users.push(users[i]);
-  });
+    // Fill the array to display it in the page
+    $http.get('/users').success(function(users){
+	for (var i in users)
+	    $scope.users.push(users[i]);
+    });
 
     
 });
@@ -290,6 +302,10 @@ app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams, $ti
 	} else {
 	    $scope.newPost = false;
 	}
+    };
+
+    $scope.startChat = function() {
+	alert("Start chat");
     };
     
     
@@ -371,17 +387,10 @@ app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams, $ti
 	//Do something with posts
     });
 
-    
-
-
     $scope.users = [];
     $scope.home = false;
     //loadFriends();
-    
-  
 
-    
-    
     // Fill the array to display it in the page
     $http.get('/users').success(function(users){
 	for (var i in users)
@@ -392,7 +401,62 @@ app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams, $ti
 });
 
 
-app.controller('ChatCtrl', function($scope, $rootScope, $http, $routeParams, $timeout) {
+app.controller('ChatCtrl', function($scope, socket) {
+
+    socket.on('init', function (data) {
+
+	$scope.name = data.name;
+	$scope.chatusers = data.users;
+    });
+
+    socket.on('send:message', function (message) {
+	//alert("message is " + message);
+	$scope.messages.push(message);
+    });
+
+ /*   socket.on('user:join', function (data) {
+	$scope.messages.push({
+	    user: 'chatroom',
+	    text: 'User ' + data.name + ' has joined.'
+	});
+	$scope.chatusers.push(data.name);
+    });*/
+
+/*    // add a message to the conversation when a user disconnects or leaves the room
+    socket.on('user:left', function (data) {
+	$scope.messages.push({
+	    user: 'chatroom',
+	    text: 'User ' + data.name + ' has left.'
+	});
+	var i, user;
+	for (i = 0; i < $scope.chatusers.length; i++) {
+	    user = $scope.chatusers[i];
+	    if (user === data.name) {
+		$scope.chatusers.splice(i, 1);
+		break;
+	    }
+	}
+    });*/
+    $scope.message = {text: ""}
+    
+    $scope.messages = [];
+
+    $scope.sendMessage = function() {
+	var hej = $scope.message.text;
+
+	socket.emit('send:message', {
+	    user: 'Emil',
+	    reciever: 'Tommy',
+	    message: hej
+	});
+
+	// add the message to our model locally
+	$scope.messages.push($scope.message.text);
+
+	// clear message box
+	$scope.message.text = '';
+    }
+    
     $scope.chatPopover = "fName said";
     $scope.chatTitle = "fName lName";
     

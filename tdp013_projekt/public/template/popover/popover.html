@@ -7,17 +7,18 @@
 				      }"></span>
   <div class="joyride-content-wrapper" style="height: 200px;">
     <h4 ng-bind="title" ng-show="title"></h4>
-    <p ng-bind="content"></p>
+    <p ng-repeat="message in $parent.messages">{{message.user}} said: {{message.text}}</p>
   </div>
   <div class="joyride-content-wrapper">
-    <ul id="messages"></ul>
+    <ul></ul>
     <div class="large-12">
       <div class="row collapse">
 	<div class="small-9 columns">
-	  <input type="text" ng-model="dynamicPopoverTitle" class="form-control">
+	  <input ng-model="$parent.message.text" type="text"  class="form-control">
 	</div>
 	<div class="small-3 columns">
-	  <a href="#" class="button small prefix">Send</a>
+	  <button class="button small prefix" ng-click="$parent.sendMessage()">Send</a>
+	 
 	</div>
       </div>
     </div>

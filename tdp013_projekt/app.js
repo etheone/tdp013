@@ -182,16 +182,7 @@ app.post('/newpost', auth, function(req, res){
     //    var timePosted = Date(); TO (MAY)BE IMPLEMENTED
     var text = req.body.text;
     var userToRecieve = req.body.userToRecieve;
-    var post = {'author': author, 'text':text };
-    console.log("AUTHOR IS");
-    console.log(author);
-    console.log("DATE IS");
-    console.log("today =))))");
-    console.log("USER TO RECIEVE THIS SHIT IS");
-    console.log(userToRecieve);
-    console.log("TEXT IS");
-    console.log(text);
-    
+    var post = {'author': author, 'text':text };   
     
     User.findByIdAndUpdate(userToRecieve, {$push: { posts: post }}, {new: true}, function(err, user){
 	if(err) {
@@ -299,17 +290,27 @@ app.post('/logout', function(req, res){
 });*/
 
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
-io.on('connection', function(socket){
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-});
+
 server.listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 });
-
+var io = require('socket.io').listen(server);
+app.io = require('socket.io').listen(app.server);
+var socketPassport = require('passport.socketio');
+app.io.use(socketPassport.authorize({
+  cookieParser: cookieParser,
+  key: 'connect.sid',
+  secret: 'securedsession',
+  store: {mongooseConnection: mongoose.connection},
+  fail: function(data, message, error, accept) {
+    accept(null, false);
+  },
+  success: function(data, accept) {
+      console.log("HEHEHEHEJJJJJJJJJ");
+      accept(null, true);
+  }
+}));
+io.sockets.on('connection', require('./socket'));
 
 
 
