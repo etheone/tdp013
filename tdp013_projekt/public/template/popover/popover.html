@@ -5,9 +5,10 @@
 				      right: placement === 'left',
 				      top: placement === 'bottom'
 				      }"></span>
-  <div class="joyride-content-wrapper" style="height: 200px;">
+  <div class="joyride-content-wrapper" style="height: 250px; overflow-y: scroll;">
     <h4 ng-bind="title" ng-show="title"></h4>
-    <p ng-repeat="message in $parent.messages">{{message.user}} said: {{message.text}}</p>
+
+    <p ng-repeat="m in $parent.chat.messages" style="margin: 0;">{{m.text}}</p>
   </div>
   <div class="joyride-content-wrapper">
     <ul></ul>
@@ -17,7 +18,7 @@
 	  <input ng-model="$parent.message.text" type="text"  class="form-control">
 	</div>
 	<div class="small-3 columns">
-	  <button class="button small prefix" ng-click="$parent.sendMessage()">Send</a>
+	  <button class="button small prefix" ng-click="$parent.sendMessage($parent.chat.otherid)">Send</a>
 	 
 	</div>
       </div>
