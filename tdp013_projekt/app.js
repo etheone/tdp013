@@ -15,6 +15,10 @@ var MongoStore = require('connect-mongo')(session);
 
 var functions = require('./functions.js');
 
+var busboy = require('connect-busboy');
+var fs = require('fs');
+
+
 var DBconfig = require('./db.js');
 mongoose.connect(DBconfig.url);
 
@@ -134,9 +138,10 @@ app.use(session({
 
 app.use(passport.initialize()); // Add passport initialization
 app.use(passport.session());    // Add passport initialization
-
+app.use(busboy({ immediate: true }));
 //app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // development only
 if ('development' == app.get('env')) {
@@ -261,6 +266,68 @@ app.get('/userinfo', auth, function(req, res){
     
 });
 
+app.get(/useruploads/, function(req, res) {
+    console.log("called***********************************************************************************************************************************************");
+    console.log(req.path);
+    res.sendFile(__dirname + req.path);
+});
+
+app.get('/images', function(req, res) {
+    console.log("Trying to get images");
+    console.log("PAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMSSSSSSSSSSSSSSSSSSS below");
+    console.log(req.query.userid);
+    var userImages = [];
+    var imageFolder;
+    if(req.query.userid === undefined) {
+	console.log("OUR IMAGES!!!!!!!!!!!!");
+	imageFolder = req.user._id;
+    } else {
+	console.log("FRIENDS IMAGES!!!!!!!!!!");
+	imageFolder = req.query.userid;
+    }
+    
+    fs.readdir(__dirname + '/useruploads/' + imageFolder, function(err,files){
+	if(err) {
+	    console.log(err);
+	    throw err;
+	}
+	files.forEach(function(file){
+	    console.log(" GOT THE FILES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
+	    console.log('/useruploads/' + imageFolder + "/" + file);
+	    
+	    userImages.push('/useruploads/' + imageFolder + "/" + file);
+	    
+            // do something with each file HERE!
+	});
+	res.send(userImages);
+    });
+    
+    
+});
+
+app.post('/upload', function(req, res) {
+    var fstream;
+    console.log("*************UPLOADING A FILE*********************");
+    req.pipe(req.busboy);
+    console.log("***************** REQ.PIPE ******************");
+    console.log(req.pipe);
+    var newName = Date.now();
+    console.log("***************** DATESTRING  ******************");
+    console.log(newName);
+    req.busboy.on('file', function (fieldname, file, filename) {
+        console.log("Uploading: " + filename); 
+        fstream = fs.createWriteStream(__dirname + '/useruploads/' + req.user._id + "/" + newName);
+        file.pipe(fstream);
+        fstream.on('close', function () {
+            res.send();
+        });
+    });
+    //console.log("UPLOADING A FILE");
+    //console.log(req);
+    //console.log(req.body);
+    //res.send();
+});
+
 
 // route to test if the user is logged in or not
 app.get('/loggedin', function(req, res) {
@@ -270,6 +337,13 @@ app.get('/loggedin', function(req, res) {
 });
 
 app.post('/register', passport.authenticate('local-signup'), function(req, res) {
+    try {
+	functions.mkdirSync(fs, __dirname + '/useruploads/' + req.user._id);
+    } catch(err) {
+	console.log(err);
+	throw err;
+    }
+    
     res.send(req.user);
 });
 
@@ -313,62 +387,3 @@ app.io.use(socketPassport.authorize({
 io.sockets.on('connection', require('./socket'));
 
 
-
-
-
-//
-					       /* function(req, username, password, done) {
-    process.nextTick(function() {
-	console.log(req);
-	var newUser = new User();
-	newUser.local.username = username;
-	newUser.local.password = password;
-	newUser.local.firstName = req.body.firstname;
-	newUser.local.lastName = req.body.lastname;
-	console.log(newUser.local.username);
-	console.log(newUser.local.password);
-	console.log(newUser.local.firstName);
-	console.log(newUser.local.lastName);
-	functions.createUser(newUser);
-	return done(null, newUser);
-    })
-}));
-
-passport.use('local-signup', new LocalStrategy({
-    // by default, local strategy uses username and password, we will override with email
-    usernameField : 'email',
-    passwordField : 'password',
-    passReqToCallback : true // allows us to pass back the entire request to the callback
-},
-
-
-};*/
-
-
-/*
-app.get('/users', auth, function(req, res){
-    var usersArr = [];
-    User.find({}, function(err, users) {
-	if(err) {
-	    console.log(err);
-	    throw err;
-	} else {
-	    //console.log(users[2].local.firstName);
-	    for(var x in users) {
-		
-		var temp = {};
-		temp['name'] = (users[x].local.firstName + " " + users[x].local.lastName);
-		//console.log(temp);
-	//	console.log(users[x].local.firstName);
-		usersArr.push(temp);
-	    }
-	}
-	
-	res.send(usersArr);
-    });
-    
- // res.send([{name: "user1"}, {name: "user2"}]);
-});*/
-//==================================================================
-
-//==================================================================

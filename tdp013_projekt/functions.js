@@ -41,6 +41,14 @@ function findUsers(user, res) {
     });
 }
 
+function mkdirSync(fs, path) {
+    try {
+	fs.mkdirSync(path);
+    } catch(e) {
+	if ( e.code != 'EEXIST' ) throw e;
+    }   
+}
+
 function addFriend(currentUser, userToAdd, user, res) {   
 }
 
@@ -49,6 +57,7 @@ function addFriend(currentUser, userToAdd, user, res) {
 
 exports.createUser = createUser;
 exports.findUsers = findUsers;
+exports.mkdirSync = mkdirSync;
 //exports.login = login;
 
 

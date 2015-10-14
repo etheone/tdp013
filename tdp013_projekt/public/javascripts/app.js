@@ -118,6 +118,52 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 	};
     });
 
+app.directive('resize', function ($window) {
+    return function (scope, element, attr) {
+
+        var w = angular.element($window);
+        scope.$watch(function () {
+            return {
+                'h': window.innerHeight, 
+                'w': window.innerWidth
+            };
+        }, function (newValue, oldValue) {
+            console.log(newValue, oldValue);
+            scope.windowHeight = newValue.h;
+            scope.windowWidth = newValue.w;
+
+            scope.resizeWithOffset = function (offsetH) {
+                scope.$eval(attr.notifier);
+                return { 
+                    'height': (newValue.h - offsetH) + 'px'                    
+                };
+            };
+
+        }, true);
+
+        w.bind('resize', function () {
+            scope.$apply();
+        });
+    }
+}); 
+
+app.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+            
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
+
+
 
 app.factory('socket', function ($rootScope) {
     var socket = io.connect();
@@ -211,6 +257,7 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
     };
 });
 
+
 /**********************************************************************
  * Home controller
  **********************************************************************/
@@ -229,6 +276,10 @@ app.controller('HomeCtrl', function($scope, $rootScope, $http) {
 	
     };
 */
+    $scope.notifyServiceOnChage = function(){
+	console.log($scope.windowHeight);
+    };
+   
     $scope.atPost = 1;
    $scope.changeView = function(setter) {
 	$scope.atPost = setter;
@@ -573,8 +624,27 @@ app.controller('PostCtrl', function($scope, $http, $routeParams) {
  
 });
 
-app.controller('ImageCtrl', function($scope, $http, $routeParams) {
-    // List of users got from the server
+app.controller('ImageCtrl', function($q, $rootScope, $scope, $http, $routeParams) {
+    
+/*
+
+    var worker = new Worker('worker.js');
+    var defer = $q.defer();
+    worker.addEventListener('message', function(e) {
+	console.log('Worker said: ', e.data);
+	defer.resolve(e.data);
+    }, false);
+
+    return {
+        doWork : function(myData){
+	    defer = $q.defer();
+	    worker.postMessage(myData); // Send data to our worker. 
+	    return defer.promise;
+        }
+    };
+*/
+
+
  
     
     $scope.newImage = false;
@@ -587,10 +657,42 @@ app.controller('ImageCtrl', function($scope, $http, $routeParams) {
     };
 
     
-    $scope.sendImage = function(){
-	alert("Uploading new image ;)");
-    };
 
+    $scope.getImages = function(){
+	$http({
+	    url: '/images',
+	    method: 'GET',
+	    params: {userid: $routeParams.userid}
+	}).success(function(images){
+	    alert("Success getting images");
+	    console.log("Success getting images");
+	    $scope.images = images;
+	}).error(function(err) {
+	    console.log("error while getting messages");
+	    alert("error while getting images");
+	}); 
+    }
+    $scope.getImages();
+    
+    $scope.sendImage = function(files){
+
+	var fd = new FormData();
+	//Take the first selected file
+	fd.append("file", files);
+
+	$http.post('/upload', fd, {
+            withCredentials: true,
+            headers: {'Content-Type': undefined },
+            transformRequest: angular.identity
+	})        
+	    .success(function(){
+		alert("file upload success");
+		
+            })
+            .error(function(){
+		alert("file upload error");
+            });
+    };
 });
 
 
