@@ -12,7 +12,7 @@ var errorHandler = require('errorhandler');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
-
+var cors = require('cors');
 var functions = require('./functions.js');
 
 var busboy = require('connect-busboy');
@@ -126,6 +126,7 @@ app.set('view engine', 'ejs');
 //app.use(express.favicon());
 //app.use(express.logger('dev'));
 app.use(morgan('dev'));
+app.use(cors());
 app.use(cookieParser()); 
 app.use(bodyParser.json());
 //app.use(express.methodOverride());
@@ -267,22 +268,22 @@ app.get('/userinfo', auth, function(req, res){
 });
 
 app.get(/useruploads/, function(req, res) {
-    console.log("called***********************************************************************************************************************************************");
-    console.log(req.path);
+    //console.log("called***********************************************************************************************************************************************");
+    //console.log(req.path);
     res.sendFile(__dirname + req.path);
 });
 
 app.get('/images', function(req, res) {
-    console.log("Trying to get images");
-    console.log("PAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMSSSSSSSSSSSSSSSSSSS below");
-    console.log(req.query.userid);
+    //console.log("Trying to get images");
+    //console.log("PAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMSSSSSSSSSSSSSSSSSSS below");
+    //console.log(req.query.userid);
     var userImages = [];
     var imageFolder;
     if(req.query.userid === undefined) {
-	console.log("OUR IMAGES!!!!!!!!!!!!");
+	//console.log("OUR IMAGES!!!!!!!!!!!!");
 	imageFolder = req.user._id;
     } else {
-	console.log("FRIENDS IMAGES!!!!!!!!!!");
+	//console.log("FRIENDS IMAGES!!!!!!!!!!");
 	imageFolder = req.query.userid;
     }
     
@@ -292,8 +293,8 @@ app.get('/images', function(req, res) {
 	    throw err;
 	}
 	files.forEach(function(file){
-	    console.log(" GOT THE FILES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
-	    console.log('/useruploads/' + imageFolder + "/" + file);
+	   // console.log(" GOT THE FILES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
+	    //console.log('/useruploads/' + imageFolder + "/" + file);
 	    
 	    userImages.push('/useruploads/' + imageFolder + "/" + file);
 	    
@@ -326,6 +327,53 @@ app.post('/upload', function(req, res) {
     //console.log(req);
     //console.log(req.body);
     //res.send();
+});
+
+app.get('/checkForUpdates', function(req, res) {
+    console.log("JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+   // console.log(req);
+   // console.log(req.query.time);
+    //console.log(req.query.user);
+    var userToCheck;
+    if(req.query.user === "req.user._id") {
+	userToCheck = req.user._id;
+    } else {
+	userToCheck = req.query.user;
+    }
+    //console.log("Trying to get files in checkforupdates");
+    fs.readdir(__dirname + '/useruploads/' + userToCheck, function(err,files){
+	if(err) {
+	    console.log(err);
+	    throw err;
+	}
+	
+	var toCompare = parseInt(req.query.time);
+	var latest = 0;
+	if (files.length >= 1) {
+	    latest = parseInt(files.slice(-1)[0]);
+	} 
+	var toSend;
+	if(latest > toCompare)
+	{
+	    toSend = true;
+	} else {
+	    toSend = false;
+	}
+
+	
+	//console.log(files);
+	//console.log("To compare");
+	//console.log(toCompare);
+	//console.log("Latest");
+	//console.log(latest);
+	//console.log("toSend");
+	//console.log(toSend);
+	res.send(toSend);
+        
+    });
+
+
+
 });
 
 

@@ -25,6 +25,7 @@ module.exports = function (socket) {
 	//name: name
     });
 
+
     // broadcast a user's message to other users
     socket.on('send:message', function (data) {
 	
@@ -34,6 +35,7 @@ module.exports = function (socket) {
 	    console.log(data[x]);
 	    console.log(x);
 	}
+	
 	console.log("********************************************");
 	socket.broadcast.emit('send:message', {
 	    sender: data.user,

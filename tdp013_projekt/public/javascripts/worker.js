@@ -1,10 +1,30 @@
-this.onmessage = function (url) {
-    getDataFromURL(url.data);
+var url = '/checkForUpdates';
+var timeToCheck;
+var userToCheck;
+this.onmessage = function(latest) {
+    console.log(latest);
+    
+    console.log("time.data and theUser");
+ //   var timeToCheck;
+   // var userToCheck;
+    if(Object.prototype.toString.call(latest.data) === '[object Array]' ) {
+	timeToCheck = latest.data[0];
+	userToCheck = latest.data[1];
+    } else {
+	timeToCheck = latest.data;
+	userToCheck = "req.user._id";
+    }
+
+   
+
+   // timedPoll(url.data);
 }
+
+var HttpRequest = new XMLHttpRequest();
 var HttpClient = function () {
     
     this.get = function (Url, Callback) {
-        HttpRequest = new XMLHttpRequest();
+        
         HttpRequest.onreadystatechange = function () {
             if (HttpRequest.readyState == 4 && HttpRequest.status == 200) {
                 console.log(HttpRequest.responseText.length);
@@ -15,10 +35,35 @@ var HttpClient = function () {
         HttpRequest.send(null);
     }
 }
-function getDataFromURL(url) { 
-    var currentTime = Date.now();
-    Client = new HttpClient();
-    Client.get(url, function (answer) {
-        postMessage(answer);
-    });  
+var Client = new HttpClient();
+
+function timedPoll() {
+    var params = "?time=" + timeToCheck + "&user=" + userToCheck;
+    if(timeToCheck != undefined) {
+	Client.get(url + params, function (answer) {
+	    if(answer === "true") {
+		postMessage(answer);
+	    }
+	});
+    }
+    /*
+    getDataFromURL(url, timeToCheck, userToCheck);*/
+    setTimeout(function() {
+	timedPoll();
+    }, 3000);
+   
 }
+
+timedPoll();
+
+
+/*
+function getDataFromURL(url, timeToCheck, userToCheck) { 
+    
+    
+    Client.get(url + params, function (answer) {
+	if(answer === "true") {
+            postMessage(answer);
+	}
+    });  
+}*/
