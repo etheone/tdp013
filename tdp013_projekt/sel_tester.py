@@ -14,15 +14,13 @@ from selenium.webdriver.common.keys import Keys
 class SocializeTests(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
-        #self.driver2 = webdriver.Firefox()
+        
 
     def test_A_register(self):
         driver = self.driver
-        #driver2 = self.driver2
-        
         driver.get("localhost:3000/#/register")
 
-        #time.sleep(1)
+
         """ Testing to registrate a user
         When a registration is successful, the user is automatically logged in """
         firstNameInputField = driver.find_element_by_id("firstName")
@@ -71,7 +69,6 @@ class SocializeTests(unittest.TestCase):
 
     def test_B_login(self):
         driver = self.driver
-        #driver.get("file:///home/emil/kurser/tdp013/lab1/index.html")
 
         driver.get("localhost:3000/#/login")
 
@@ -182,8 +179,6 @@ class SocializeTests(unittest.TestCase):
         time.sleep(0.5)
         # Find the register-button
         driver.find_element_by_class_name("button").click()
-        #registerButton = driver.find_element_by_class_name("button")
-        #registerButton.click()
         time.sleep(0.5)
         # Log out superman
         logout = driver.find_element_by_link_text("Log out")
@@ -197,7 +192,6 @@ class SocializeTests(unittest.TestCase):
         passwordInputField.send_keys("testPassword")
         time.sleep(0.5)
         driver.find_element_by_class_name('button').click()
-        #loginButton.click()
         time.sleep(0.5)
 
         """ Adding Bruce Wayne as our friend """
@@ -249,9 +243,6 @@ class SocializeTests(unittest.TestCase):
 
         friend = []
         friends = driver.find_elements_by_xpath("//li[@ng-repeat='f in friends']")
-        #print("Test here:")
-        #for friend in friends:
-        #    print (friend.text)
         self.assertEqual(friends[0].text, 'Bruce Wayne')
         self.assertEqual(friends[1].text, 'Clark Kent')
 
@@ -269,7 +260,6 @@ class SocializeTests(unittest.TestCase):
         passwordInputField.send_keys("testPassword")
         time.sleep(0.5)
         driver.find_element_by_class_name('button').click()
-        #loginButton.click()
         time.sleep(0.5)
 
         # Go to Bruce Waynes page
@@ -308,11 +298,9 @@ class SocializeTests(unittest.TestCase):
         time.sleep(0.5)
         driver.find_element_by_xpath("//button[contains(text(), 'Upload picture')]").click()
         time.sleep(0.5)
-        #driver.find_element_by_name("file").send_keys("./testimage1.png")
         driver.find_element_by_css_selector("input[type=\"file\"]").send_keys("/home/tommy/kurser/tdp013/tdp013_projekt/testimage1.png")
         time.sleep(0.5)
         driver.find_element_by_id("sendImage").click()
-        #driver.find_element_by_xpath("//button[contains(text(), 'Send')]").click()
         # Wait 4 seconds to make sure that we see the image
         time.sleep(4)
         # Check if the picture shows in the browser
@@ -324,48 +312,15 @@ class SocializeTests(unittest.TestCase):
         # Upload another picture
         driver.find_element_by_css_selector("input[type=\"file\"]").send_keys("/home/tommy/kurser/tdp013/tdp013_projekt/testimage2.png")
         time.sleep(0.5)
-        #driver.execute_script("document.querySelectorAll('button#sendImageButton')[0].click()")
-        #driver.find_element_by_xpath("//button[contains(text(), 'Send')]").click()
         driver.find_element_by_id("sendImage").click()
         # Wait 4 seconds to make sure that we see the image
         time.sleep(4)
         # Check if the picture shows in the browser
-        #images = []
         images = driver.find_elements_by_id("imageDiv")
         self.assertEqual(len(images), 2)
         time.sleep(0.5)
         
-    """def test_E_chats(self):
-        driver = self.driver
-        driver.get("localhost:3000/#/login")
 
-        time.sleep(2)"""
-
-        
-        
-
-    """
-    def test_checkboxes(self):
-        driver = self.driver
-    #        driver.get("localhost:8000")
-        driver.get("file:///home/emil/kurser/tdp013/lab1/index.html")
-        textAreaElement = driver.find_element_by_id("newMessage")
-        textAreaElement.send_keys("First")
-        textAreaElement.submit()
-        time.sleep(1)
-
-        textAreaElement.send_keys("Second")
-        textAreaElement.submit()
-        time.sleep(1)
-
-        messages = driver.find_elements_by_class_name("unread")
-        for checkbox in messages:
-            checkbox.find_element_by_xpath("input").click()
-            time.sleep(2)
-
-        for element in messages:
-            self.assertEqual(element.get_attribute("class"), "read")
-    """
 
     def tearDown(self):
         self.driver.close()
@@ -373,77 +328,3 @@ class SocializeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-""" Different types of comment....
-
-        #driver.find_element_by
-        #logout = driver.find_element_by_xpath("//a[@ng-click='logout()']")
-        #driver.find_element_by_link_text("Log out").click()
-
-
-
-        # Find the error div
-        errorDivElement = driver.find_element_by_id("errorText")
-        # Test that errormessage is not displayed when page is loaded
-        self.assertEqual(errorDivElement.value_of_css_property("display"), "none")
-        # Find the textarea
-        textAreaElement = driver.find_element_by_id("newMessage")
-
-        textAreaElement.send_keys("")
-        textAreaElement.submit()
-        time.sleep(1)
-
-        # Test that errormessage is displayed with empty textbox
-        self.assertEqual(errorDivElement.value_of_css_property("display"), "inline-block")
-
-        textAreaElement.send_keys("Cheese!")
-        textAreaElement.submit()
-        time.sleep(1)
-
-        # Test that errormessage is removed if we enter a valid message
-        self.assertEqual( errorDivElement.value_of_css_property("display"), "none" )
-
-        s = "a" * 150
-        textAreaElement.send_keys(s)
-        textAreaElement.submit()
-        time.sleep(1)
-
-        # Test that errormessage is displayed when to long string is submitted
-        self.assertEqual(errorDivElement.value_of_css_property("display"), "inline-block")
-
-
-        # Find the textarea
-        textAreaElement = driver.find_element_by_id("newMessage")
-        textAreaElement.send_keys("First")
-        textAreaElement.submit()
-        time.sleep(1)
-
-        # Test if First is div with classname "unread"
-        addedMessage = driver.find_element_by_class_name("unread").text
-        self.assertIn("First", addedMessage)
-
-        textAreaElement.send_keys("Second")
-        textAreaElement.submit()
-        time.sleep(1)
-
-        # Test if Second message is above the first
-        newestMessage = driver.find_element_by_xpath("//div[@class='unread']")
-        self.assertEqual(newestMessage.text, "Second")
-
-        textAreaElement.send_keys("Third")
-        textAreaElement.submit()
-        time.sleep(1)
-        
-        # Collect all added messages divs in a list
-        addedMessages = driver.find_elements_by_class_name("unread")
-        # Check so that newest messages are placed at the top
-        self.assertEqual(addedMessages[0].text, "Third")
-        self.assertEqual(addedMessages[1].text, "Second")
-        self.assertEqual(addedMessages[2].text, "First")
-        #for message in addedMessages:
-        #    print message.text
-
-        
-"""
-
-
