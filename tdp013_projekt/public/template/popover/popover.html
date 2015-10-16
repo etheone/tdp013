@@ -15,10 +15,10 @@
     <div class="large-12">
       <div class="row collapse">
 	<div class="small-9 columns">
-	  <input ng-model="$parent.message.text" type="text"  class="form-control">
+	  <input id="chatInput" ng-model="$parent.message.text" type="text"  class="form-control">
 	</div>
 	<div class="small-3 columns">
-	  <button class="button small prefix" ng-click="$parent.sendMessage($parent.chat.otherid)">Send</a>
+	  <button id="sendChatButton" class="button small prefix" ng-click="$parent.sendMessage($parent.chat.otherid)">Send</a>
 	 
 	</div>
       </div>
