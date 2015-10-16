@@ -14,6 +14,7 @@ var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
 var cors = require('cors');
 var functions = require('./functions.js');
+var navigator = require('navigator');
 
 var busboy = require('connect-busboy');
 var fs = require('fs');
@@ -26,7 +27,7 @@ var User = require('./user');
 
 //==================================================================
 // Define the strategy to be used by PassportJS
-
+/*
 passport.use(new LocalStrategy(
     function(username, password, done) {
 	if (username === "admin" && password === "admin") // stupid example
@@ -34,7 +35,7 @@ passport.use(new LocalStrategy(
 
 	return done(null, false, { message: 'Incorrect username.' });
     }
-));
+));*/
 
 passport.use('local-login', new LocalStrategy({
     usernameField: 'username',
@@ -74,7 +75,7 @@ passport.use('local-signup', new LocalStrategy({
 
 	    // check to see if theres already a user with that email
 	    if (user) {
-		console.log(user);
+		//console.log(user);
 		console.log("User exists");
 		return done(null, false);
 	    } else {
@@ -108,7 +109,7 @@ passport.deserializeUser(function(user, done) {
 
 // Define a middleware function to be used for every secured routes
 var auth = function(req, res, next){
-    console.log(req.isAuthenticated());
+    //console.log(req.isAuthenticated());
   if (!req.isAuthenticated()) 
   	res.send(401);
   else
@@ -187,15 +188,20 @@ app.post('/newpost', auth, function(req, res){
     var author = req.user.firstName + " " + req.user.lastName;
     //    var timePosted = Date(); TO (MAY)BE IMPLEMENTED
     var text = req.body.text;
-    var userToRecieve = req.body.userToRecieve;
+    if(req.body.userToRecieve != undefined) {
+	var userToRecieve = req.body.userToRecieve;
+    } else {
+	var userToRecieve = req.user._id;
+    }
     var post = {'author': author, 'text':text };   
     
     User.findByIdAndUpdate(userToRecieve, {$push: { posts: post }}, {new: true}, function(err, user){
 	if(err) {
+
 	    throw err;
 	}
 	else {
-	    console.log(user);
+	    //console.log(user);
 	    
 	    
 	}
@@ -206,7 +212,7 @@ app.post('/newpost', auth, function(req, res){
 app.get('/friends', auth, function(req, res){
    
     var userToFind = req.user._id;
-    console.log(userToFind);
+    //console.log(userToFind);
     console.log("***********USER TO FIND IN /FRIENDS *******");
     var userInfo = []
     User.findOne({ _id : userToFind }, function(err, user){
@@ -226,8 +232,8 @@ app.get('/friends', auth, function(req, res){
 });
 
 app.post('/addfriend', auth, function(req, res){
-    console.log(req.user._id);
-    console.log(req.body.userIdToAdd);
+    //console.log(req.user._id);
+    //console.log(req.body.userIdToAdd);
     var currUser = req.user._id;
     var userToAdd = req.body.userIdToAdd;
     var nameToAdd = req.body.nameToAdd;
@@ -250,15 +256,19 @@ app.post('/addfriend', auth, function(req, res){
 	
 
 app.get('/userinfo', auth, function(req, res){
-    console.log(req.query.userid);
-    var userToFind = req.query.userid;
+    //console.log(req);
+    //console.log(req.query.userid);
+    if(req.query.userid != undefined) 
+	var userToFind = req.query.userid;
+    else
+	var userToFind = req.user._id;
     console.log("******************");
     var userInfo = []
     User.findOne({ _id : userToFind }, function(err, user){
 	if (err) {
 	    throw err;
 	} else {
-	    console.log(user);
+	    //console.log(user);
 	    userInfo.push(user.firstName + " " + user.lastName);
 	    userInfo.push(user.posts);
 	}
@@ -289,7 +299,7 @@ app.get('/images', function(req, res) {
     
     fs.readdir(__dirname + '/useruploads/' + imageFolder, function(err,files){
 	if(err) {
-	    console.log(err);
+	    //console.log(err);
 	    throw err;
 	}
 	files.forEach(function(file){
@@ -311,7 +321,7 @@ app.post('/upload', function(req, res) {
     console.log("*************UPLOADING A FILE*********************");
     req.pipe(req.busboy);
     console.log("***************** REQ.PIPE ******************");
-    console.log(req.pipe);
+    //console.log(req.pipe);
     var newName = Date.now();
     console.log("***************** DATESTRING  ******************");
     console.log(newName);
@@ -330,7 +340,7 @@ app.post('/upload', function(req, res) {
 });
 
 app.get('/checkForUpdates', function(req, res) {
-    console.log("JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    //console.log("JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
    // console.log(req);
    // console.log(req.query.time);
     //console.log(req.query.user);
@@ -343,7 +353,7 @@ app.get('/checkForUpdates', function(req, res) {
     //console.log("Trying to get files in checkforupdates");
     fs.readdir(__dirname + '/useruploads/' + userToCheck, function(err,files){
 	if(err) {
-	    console.log(err);
+	    //console.log(err);
 	    throw err;
 	}
 	
@@ -388,10 +398,11 @@ app.post('/register', passport.authenticate('local-signup'), function(req, res) 
     try {
 	functions.mkdirSync(fs, __dirname + '/useruploads/' + req.user._id);
     } catch(err) {
-	console.log(err);
+	//console.log(err);
 	throw err;
     }
-    
+    console.log("This is the REEEEEEEEEEEES");
+    //console.log(res);
     res.send(req.user);
 });
 
@@ -413,9 +424,21 @@ app.post('/logout', function(req, res){
 
 var server = http.createServer(app);
 
-server.listen(app.get('port'), function(){
-    console.log('Express server listening on port ' + app.get('port'));
-});
+function start() {
+    if(require.main != module) {
+	clearDb();
+    }
+    server.listen(app.get('port'), function(){
+	console.log('Express server listening on port ' + app.get('port'));
+    });
+};
+
+function clearDb() {
+    User.remove({}, function(err) {
+	console.log("Db collections cleared");
+    });
+};
+
 var io = require('socket.io').listen(server);
 app.io = require('socket.io').listen(app.server);
 var socketPassport = require('passport.socketio');
@@ -435,3 +458,10 @@ app.io.use(socketPassport.authorize({
 io.sockets.on('connection', require('./socket'));
 
 
+if(require.main === module) {
+    //clearDb();
+    start();
+}
+
+
+exports.start = start;
