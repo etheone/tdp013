@@ -2,11 +2,7 @@ var url = '/checkForUpdates';
 var timeToCheck;
 var userToCheck;
 this.onmessage = function(latest) {
-    console.log(latest);
     
-    console.log("time.data and theUser");
- //   var timeToCheck;
-   // var userToCheck;
     if(Object.prototype.toString.call(latest.data) === '[object Array]' ) {
 	timeToCheck = latest.data[0];
 	userToCheck = latest.data[1];
@@ -14,10 +10,6 @@ this.onmessage = function(latest) {
 	timeToCheck = latest.data;
 	userToCheck = "req.user._id";
     }
-
-   
-
-   // timedPoll(url.data);
 }
 
 var HttpRequest = new XMLHttpRequest();
@@ -46,8 +38,7 @@ function timedPoll() {
 	    }
 	});
     }
-    /*
-    getDataFromURL(url, timeToCheck, userToCheck);*/
+  
     setTimeout(function() {
 	timedPoll();
     }, 3000);
@@ -55,15 +46,3 @@ function timedPoll() {
 }
 
 timedPoll();
-
-
-/*
-function getDataFromURL(url, timeToCheck, userToCheck) { 
-    
-    
-    Client.get(url + params, function (answer) {
-	if(answer === "true") {
-            postMessage(answer);
-	}
-    });  
-}*/

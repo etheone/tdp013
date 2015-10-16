@@ -17,13 +17,8 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 	    // Make an AJAX call to check if the user is logged in
 	    $http.get('/loggedin').success(function(user){
 		// Authenticated
-		/*	  for(var x in user.local)
-			  {
-			  alert(user.local[x]);
-			  }*/
 
 		if (user !== '0') {
-		    /*$timeout(deferred.resolve, 0);*/
 		    $rootScope.currentUser = { username: user.local.username, firstname: user.firstName, lastname: user.lastName, id: user._id};
 		    $rootScope.friends = user.friends;
 		    deferred.resolve();
@@ -31,7 +26,6 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 		// Not Authenticated
 		else {
 		    $rootScope.message = 'You need to log in.';
-		    //$timeout(function(){deferred.reject();}, 0);
 		    deferred.reject();
 		    $location.url('/login');
 		}
@@ -57,8 +51,6 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 		}
 	    };
 	});
-
-	//================================================
 
 	//================================================
 	// Define all the routes
@@ -103,8 +95,6 @@ var app = angular.module('app', ['ngResource', 'ngRoute', 'mm.foundation'])
 	//================================================
 
     }) // end of config()
-
-
 
     .run(function($rootScope, $http){
 	$rootScope.message = '';
@@ -164,7 +154,6 @@ app.directive('fileModel', ['$parse', function ($parse) {
 }]);
 
 
-
 app.factory('socket', function ($rootScope) {
     var socket = io.connect();
     return {
@@ -209,7 +198,6 @@ app.controller('LoginCtrl', function($scope, $rootScope, $http, $location) {
 	})
 	    .success(function(user){
 		// No error: authentication OK
-		//currentUser = $scope.user.username;
 		$rootScope.message = 'Authentication successful!';
 		$location.url('/home');
 	    })
@@ -217,7 +205,6 @@ app.controller('LoginCtrl', function($scope, $rootScope, $http, $location) {
 		// Error: authentication failed
 		$rootScope.message = "Authentication failed!";
       		$location.path('/login');
-		//	$route.reload();
 	    });
     };
 });
@@ -237,21 +224,12 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
 	    lastname: $scope.user.lastName
 	})
 	    .success(function(user){
-		// No error: authentication OK
-		//alert(user);
-		//alert("Got registred");
-		//currentUser = $scope.user.username;
 		$rootScope.message = 'Authentication successful!';
 		$location.url('/home');
-		//$location.url('/');
 	    })
 	    .error(function(){
-		//alert("Didnt register");
-		// Error: authentication failed
 		$rootScope.message = 'Registration failed.';
 		$location.path('/register');
-		//	$route.reload();
-		//$window.location.reload();
 		
 	    });
     };
@@ -263,19 +241,6 @@ app.controller('RegCtrl', function($scope, $rootScope, $http, $location) {
  **********************************************************************/
 app.controller('HomeCtrl', function($scope, $rootScope, $http) {
 
-
-
-    // List of users got from the server
- /*   $scope.newPost = false;
-    $scope.writePost = function(){
-	if($scope.newPost === false) {
-	    $scope.newPost = true;
-	} else {
-	    $scope.newPost = false;
-	}
-	
-    };
-*/
     $scope.notifyServiceOnChage = function(){
 	console.log($scope.windowHeight);
     };
@@ -283,11 +248,6 @@ app.controller('HomeCtrl', function($scope, $rootScope, $http) {
     $scope.atPost = 1;
    $scope.changeView = function(setter) {
 	$scope.atPost = setter;
-/*	if ($scope.atPost == true){
-	    $scope.atPost = images;
-	} else {
-	    $scope.atPost = posts
-	}*/
     };
 
 
@@ -304,11 +264,7 @@ app.controller('HomeCtrl', function($scope, $rootScope, $http) {
 	$scope.users.forEach(function(obj, i){
 	    $scope.search = true;
 	    if(obj.name == sValue){
-		//alert(obj.userid);
-		//alert(obj.name);
 		$scope.searchResult = obj;
-		//alert("Result is " + $scope.searchResult.name + "id is " + $scope.searchResult.userid);
-		
 	    }
 	});
     };
@@ -329,22 +285,6 @@ app.controller('HomeCtrl', function($scope, $rootScope, $http) {
 	$scope.friends = friends;
     });
 
-    $http({
-	url: '/posts',
-	method: 'GET',
-    }).success(function(posts){
-	$scope.posts = posts;
-
-    });
-    
-    
-    //alert($rootScope.currentUser);
-    /*  $scope.addFriend = function() {
-	$http.post('/addFriend', {
-	userToAdd = this.userId;
-	})
-	};*/
-    //alert($rootScope.currentUser);
     // Fill the array to display it in the page
     $http.get('/users').success(function(users){
 	for (var i in users)
@@ -369,22 +309,17 @@ app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams, $ti
 	alert("Chat is only availible on your home page");
     };
     
-    
-    $scope.addFriend = function(){
-	
+    $scope.addFriend = function(){	
 	$http.post('/addfriend', {
 	    userIdToAdd: $routeParams.userid,
 	    nameToAdd: $scope.Userinfo[0]
 	})
 	    .success(function(friends){
-		//alert(friends);
 		$scope.friends = friends;
-		$scope.notFriend = false;
-		//$timeout(callAtTimeout, 3000);
-		
+		$scope.notFriend = false;		
 	    })
 	    .error(function(){
-		//alert('Friend could not be added at this time');
+		console.log("Error adding friend");
 	    });
     };
     
@@ -396,9 +331,7 @@ app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams, $ti
     }).success(function(info){
 	$scope.Userinfo = info;
 	$scope.visitPage = $scope.Userinfo[0];
-	//loadFriends();
     });
-
 
     $http({
 	url: '/friends',
@@ -410,30 +343,16 @@ app.controller('UserCtrl', function($scope, $rootScope, $http, $routeParams, $ti
 	    if(friend.userid == $routeParams.userid){
 		$scope.notFriend = false;
 	    }
-
 	});
-    });
-    
-    
-    $http({
-	url: '/posts',
-	method: 'GET',
-	params: {userid: $routeParams.userid}
-    }).success(function(posts){
-	$scope.posts = posts;
-	//Do something with posts
     });
 
     $scope.users = [];
     $scope.home = false;
-    //loadFriends();
 
-    // Fill the array to display it in the page
     $http.get('/users').success(function(users){
 	for (var i in users)
 	    $scope.users.push(users[i]);
     });
-
     
 });
 
@@ -447,14 +366,10 @@ app.controller('ChatCtrl', function($scope, $rootScope, $timeout, socket) {
     });
 
     socket.on('send:message', function (message) {
-	//alert("message is " + message);
-
 
 	if(message.sender == $rootScope.currentUser.id){
 	    $rootScope.chats.forEach(function(obj, i){
-	//	alert("foreach");
 		if(obj.otherid == message.reciever) {
-	//	    alert("if");
 		    obj.messages.push(message);
 		}
 	    });
@@ -469,16 +384,7 @@ app.controller('ChatCtrl', function($scope, $rootScope, $timeout, socket) {
 		}
 	    });
 	}
-	
-	//alert("hej");
-	//alert(message.sender);
-
-
-
-	
-	//$scope.messages.push(message);
     });
-
 
     $scope.message = {text: ""}
     
@@ -493,38 +399,16 @@ app.controller('ChatCtrl', function($scope, $rootScope, $timeout, socket) {
 	    message: $rootScope.currentUser.firstname + " said: " + messageText
 	});
 
-	// add the message to our model locally
-	//$scope.messages.push($scope.message.text);
-	//Apend our own message to the results
-/*	var message = $rootScope.currentUser.firstname + " said: " + messageText;
-	$rootScope.chats.forEach(function(obj, i){
-	    alert("foreach");
-	    if(obj.otherid == recieveId) {
-		alert("if");
-		
-		obj.messages.push(message);
-		
-		
-	    }
-	});*/
-	
-
-	
-
-	// clear message box
 	$scope.message.text = '';
     };
     
     $scope.chatPopover = "fName said";
     $scope.chatTitle = "fName lName";
-    
 
 });
 
 app.controller('PostCtrl', function($scope, $http, $routeParams) {
-    // List of users got from the server
  
-    
     $scope.newPost = false;
     $scope.writePost = function(){
 	if($scope.newPost === false) {
@@ -537,7 +421,6 @@ app.controller('PostCtrl', function($scope, $http, $routeParams) {
     $scope.posttext;
     
     $scope.sendPost = function(){
-	//alert($scope.posttext);
 	$http.post('/newpost', {
 	    userToRecieve: $routeParams.userid,
 	    text: $scope.posttext
@@ -545,10 +428,9 @@ app.controller('PostCtrl', function($scope, $http, $routeParams) {
 	    .success(function(posts){
 		$scope.newPost = false;
 		$scope.posts.push(posts);
-		//alert(posts);
 	    })
 	    .error(function(){
-		//alert('Post could not be sent at this time');
+		console.log("There was an error posting the post");
 	    });
     };
 
@@ -558,14 +440,10 @@ app.controller('PostCtrl', function($scope, $http, $routeParams) {
 	params: {userid: $routeParams.userid}
     }).success(function(posts){
 	$scope.posts = posts;
-	//Do something with posts
     });
-
- 
 });
 
 app.controller('ImageCtrl', function($q, $rootScope, $scope, $http, $routeParams) {
-    
  
     $scope.newImage = false;
     $scope.uploadImage = function(){
@@ -576,32 +454,24 @@ app.controller('ImageCtrl', function($q, $rootScope, $scope, $http, $routeParams
 	}
     };
 
-    
-//    $scope.createWorker = function() {
     $scope.worker = new Worker('javascripts/worker.js');
-    console.log("LoADED WEBWORKER");
-  //  };
-   // $scope.createWorker(); 
+
     var latest;
     var theUser = $routeParams.userid;
+    
     $scope.getImages = function(){
 	$http({
 	    url: '/images',
 	    method: 'GET',
 	    params: {userid: $routeParams.userid}
 	}).success(function(images){
-	    //alert("Success getting images");
-	    //console.log("Success getting images");
 	    $scope.images = images;
-	    //console.log(images);
 	    
 	    if(images.length)
 		latest = (images.slice(-1)[0]).split("/")[3];
 	    else
 		latest = 0;
-	    //console.log(latest);
-	    //$scope.worker.terminate();
-	    //$scope.createWorker();
+
 	    if (theUser != undefined) {
 		$scope.worker.postMessage([latest, theUser]);
 	    } else {
@@ -609,43 +479,19 @@ app.controller('ImageCtrl', function($q, $rootScope, $scope, $http, $routeParams
 	    }
 	    
 	}).error(function(err) {
-	    console.log("error while getting messages");
-	    //alert("error while getting images");
+	    console.log("Error while getting messages");
 	}); 
     }
     $scope.getImages();
 
-    
+
     $scope.worker.onmessage = function(event) {
-	console.log(event);
-	console.log("Worker callback in app.js above");
-	//alert(event.data);
-//	if(event.data === "true") {
-	    
-	    console.log("trying to call scope.getImages");
-	    $scope.getImages();
-	    
-	    //$scope.createWorker();
-	    
-//	}
+	$scope.getImages();
     };
-
-   
-
-    /*$scope.startWorker = function(latest) {
-	if(theUser != undefined) {
-	    $scope.worker.postMessage([latest, theUser]);
-	} else {
-	    $scope.worker.postMessage(latest);
-	}
-    };*/
-
-
-    
+  
     $scope.sendImage = function(files){
 
 	var fd = new FormData();
-	//Take the first selected file
 	fd.append("file", files);
 
 	$http.post('/upload', fd, {
@@ -654,11 +500,12 @@ app.controller('ImageCtrl', function($q, $rootScope, $scope, $http, $routeParams
             transformRequest: angular.identity
 	})        
 	    .success(function(){
-		//alert("file upload success");
-		
+		console.log("Succces uploading image");
+		//Here we could have used a socket call for telling
+		//users viewing this page that something happend.	
             })
             .error(function(){
-		//alert("file upload error");
+		console.log("Error uploading image");
             });
     };
 });

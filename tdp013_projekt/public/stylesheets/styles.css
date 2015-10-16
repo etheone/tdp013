@@ -26,23 +26,6 @@ input[data-toggle]:checked + label:active {
   margin: 0 -0.9rem;
   
 }
-/*
-
-.button:hover {
-
-    background-color: lightgray;
-    border-color: #007095;
-    color: #FFFFFF;
-    transition: background-color 300ms ease-out;
-    transition-property: background-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease-out;
-    transition-delay: initial;
-    color:black;
-    font-weight:bold;
-    text-decoration: underline;
-}
-*/
 
 .button {
     font-weight:bold;
@@ -52,14 +35,6 @@ input[data-toggle]:checked + label:active {
 
 }
 
-
-.button:hover {
-   
-   /* background-color: white; */
-
-    
-
-}
 
 #r1 {
     border-right: 1px solid #333333 !important;
@@ -171,12 +146,6 @@ ul.off-canvas-list li a {
     font-weight: bold;
 }
 
-/*.page-container {
-
-
-   height: 85vh;
-
-}*/
 
 .login-box {
   background: #fff;

@@ -9,9 +9,8 @@ function createUser(user) {
 	user.save(function(err) {
 	    if(err)
 		throw err;
-	    console.log("SAVED A USER");
 	});
-	console.log("new user created");
+	console.log("New user created");
     } catch(err) {
 	console.log("There was an error creating the user: " + err);
     }
@@ -23,17 +22,13 @@ function findUsers(user, res) {
     var usersArr = [];
     user.find({}, function(err, users) {
 	if(err) {
-	    //console.log(err);
 	    throw err;
-	} else {
-	    //console.log(users[2].local.firstName);
+	} else {	 
 	    for(var x in users) {
 		
 		var temp = {};
 		temp['name'] = (users[x].firstName + " " + users[x].lastName);
 		temp['userid'] = users[x]._id;
-		//console.log(temp);
-		//	console.log(users[x].local.firstName);
 		usersArr.push(temp);
 	    }
 	}	
