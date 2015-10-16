@@ -14,7 +14,6 @@ var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
 var cors = require('cors');
 var functions = require('./functions.js');
-var navigator = require('navigator');
 
 var busboy = require('connect-busboy');
 var fs = require('fs');

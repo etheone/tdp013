@@ -22,20 +22,9 @@
     <aside class="left-off-canvas-menu">
       <ul class="off-canvas-list">
         <li><label>Menu</label></li>
-	
-        <li class="has-submenu" id="submenu-top"><a href="">New post</a>
-	  <ul class="left-submenu">
-            <li class="back"><a href="#">Back</a></li>
-            <li><label id="new_post">What would you like to post:</label></li>
-            <li><a href="#">Blog</a></li>
-	    <li><a href="#">Picture</a></li>
-	  </ul>
-	</li>
-	<li><a href="#">Feed</a></li>
-	<li><a href="#">Blog</a></li>
-	<li><a href="#">Portfolio</a></li>
-	<li><a href="#">Profile</a></li>
-	<li><a href="#">Settings</a></li>
+	<li><a href="#/home">Blog</a></li>
+	<li><a href="#/home">Portfolio</a></li>
+	<li><a href="#/home">Profile</a></li>
 	<li><a href="#/login" ng-click="logout()">Log out</a></li>
       </ul>
     </aside>
@@ -54,9 +43,9 @@
       <div class="large-3 columns" id="profile_area">
 	
 	<div class="panel">
-	  <a href="#"><img src="/static/images/profilePic.png"/></a>
-	  <h5 ng-show="{{ home }}"><a href="#">{{ currentUser.firstname + " " + currentUser.lastname  }}</a></h5>
-	  <h5 ng-hide="{{ home }}"><a href="#">{{ Userinfo[0]  }}</a></h5>
+	  <a><img src="/static/images/profilePic.png"/></a>
+	  <h5 ng-show="{{ home }}">{{ currentUser.firstname + " " + currentUser.lastname  }}</h5>
+	  <h5 ng-hide="{{ home }}">{{ Userinfo[0]  }}</h5>
 	  <div class="section-container vertical-nav" data-section data-options="deep_linking: false; one_up: true">
 	    <section class="section">
 	      <button class="button expand" ng-click="addFriend()" ng-show=" notFriend ">{{ "Add " + Userinfo[0] }}</button>
